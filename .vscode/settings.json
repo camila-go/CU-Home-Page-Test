@@ -1,0 +1,4 @@
+{
+  "typescript.tsc.autoDetect": "off",
+  "typescript.validate.enable": false
+}

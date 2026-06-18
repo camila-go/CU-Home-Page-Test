@@ -1,0 +1,85 @@
+:root {
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-uni-red: #c10016;
+  --color-uni-black: #212322;
+  --color-boulder-50: #f3f4f4;
+  --color-boulder-600: #696f74;
+  --color-boulder-800: #3a4146;
+  --color-boulder-700: #4f565b;
+  --color-boulder-900: #212427;
+  --color-stat-blue: #94b7bb;
+  --color-gray-500: #d9d9d9;
+  --color-neutral-100: #d4d4d4;
+  --color-neutral-200: #adadad;
+  --color-light-gray: #f6f7f7;
+
+  /* Figma display: Acumin Pro Extra Condensed (maps to Acumin VF styles in dev mode) */
+  --font-display: 'acumin-pro-extra-condensed', sans-serif;
+  --font-acumin-pro: 'acumin-pro', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --weight-display-black: 800;
+  --weight-display-semibold: 600;
+  --text-display-xl: 6.25rem; /* 100px */
+  --text-display: 3.75rem; /* 60px */
+  --text-display-stats: 4.6875rem; /* 75px */
+  --text-h2: 3rem; /* 48px */
+  --text-program-finder: 2.8125rem; /* 45px */
+  --text-carousel-title: 4.5rem; /* 72px */
+  --text-h4: 1.75rem; /* 28px */
+  --text-h5: 1.5rem; /* 24px */
+  --text-h6: 1.25rem; /* 20px */
+  --text-body-lg: 1.25rem; /* 20px */
+  --text-body: 1rem; /* 16px */
+  --text-body-sm: 0.875rem; /* 14px */
+  --text-ui-sm: 0.75rem; /* 12px */
+
+  --max-content: 1440px;
+  --tiles-max-width: 1170px;
+  --page-gutter: clamp(15px, 12.5vw, 240px);
+  --radius-pill: 32px;
+  --radius-card: 40px;
+  --radius-chip: 8px;
+  --radius-tile: 16px;
+  --radius-glass: 24px;
+
+  --carousel-gap: 24px;
+  --carousel-peek: 0%;
+
+  /* Glass UI — matches Figma GLASS effect + Make prototype */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.28);
+  --glass-blur: 16px;
+  --glass-sheen: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(255, 255, 255, 0) 60%
+  );
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 0.2s;
+  --duration-med: 0.45s;
+  --duration-slow: 0.7s;
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --page-gutter: 240px;
+  }
+}
+
+@media (max-width: 1280px) {
+  :root {
+    --page-gutter: clamp(24px, 6vw, 80px);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --page-gutter: clamp(15px, 4vw, 24px);
+  }
+}

@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capella University</title>
+    <link rel="stylesheet" href="https://use.typekit.net/rrn6owv.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://kit.fontawesome.com/f1bee60eab.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="utility-bar">
+      <div class="utility-bar__inner page-container">
+        <a href="tel:1-866-679-9682" class="utility-bar__link">1-866-679-9682</a>
+        <a href="#" class="utility-bar__link">Log in</a>
+        <a href="#" class="utility-bar__cta">Request information</a>
+      </div>
+    </div>
+
+    <header class="main-nav">
+      <div class="main-nav__wrapper page-container">
+        <nav class="main-nav__bar" aria-label="Main navigation">
+          <a href="#" class="main-nav__logo" aria-label="Capella University home">
+            <img
+              src="/assets/nav-shield.svg"
+              alt=""
+              class="main-nav__logo-shield logo-img"
+              width="31"
+              height="35"
+            />
+            <img
+              src="/assets/nav-wordmark.svg"
+              alt="Capella University"
+              class="main-nav__logo-wordmark logo-img"
+              width="127"
+              height="33"
+            />
+          </a>
+          <ul class="main-nav__links">
+            <li><a href="#">Degrees &amp; Programs</a></li>
+            <li><a href="#">Capella Experience</a></li>
+            <li><a href="#">Financing</a></li>
+            <li><a href="#">Admissions</a></li>
+          </ul>
+          <a href="#" class="btn btn--white btn--md main-nav__apply">Apply now</a>
+          <button
+            type="button"
+            class="main-nav__menu-btn"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobile-nav-panel"
+          >
+            <span class="main-nav__menu-icon" aria-hidden="true"></span>
+          </button>
+        </nav>
+        <div class="main-nav__mobile-panel" id="mobile-nav-panel" hidden>
+          <ul class="main-nav__mobile-links">
+            <li><a href="#">Degrees &amp; Programs</a></li>
+            <li><a href="#">Capella Experience</a></li>
+            <li><a href="#">Financing</a></li>
+            <li><a href="#">Admissions</a></li>
+          </ul>
+          <a href="#" class="btn btn--white btn--md main-nav__mobile-apply">Apply now</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero__background" aria-hidden="true">
+          <div class="hero__bg-layer">
+            <img
+              src="/assets/hero-base.png"
+              alt=""
+              class="hero__bg-image hero__bg-image--base media-img"
+            />
+          </div>
+          <div class="hero__bg-layer">
+            <img
+              src="/assets/hero-people.png"
+              alt=""
+              class="hero__bg-image hero__bg-image--people media-img"
+            />
+          </div>
+          <div class="hero__gradient"></div>
+        </div>
+        <div class="hero__content">
+          <h1 id="hero-heading" class="hero__title display-xl">what can&apos;t you do</h1>
+          <p class="hero__subtitle">Earn a degree built for your career.</p>
+          <a href="#" class="btn btn--white btn--lg">Get started</a>
+        </div>
+      </section>
+
+      <section class="program-finder" aria-labelledby="program-finder-heading">
+        <div class="program-finder__inner page-container">
+          <div class="program-finder__top">
+            <h2 id="program-finder-heading" class="program-finder__title">
+              catch what you&apos;re chasing.<br />
+              FIND YOUR PROGRAM NOW.
+            </h2>
+            <div class="program-finder__chips" role="tablist" aria-label="Degree level">
+              <button
+                type="button"
+                class="chip"
+                role="tab"
+                aria-selected="false"
+                data-degree="bachelors"
+              >
+                <i class="fa-solid fa-graduation-cap chip__icon" aria-hidden="true"></i>
+                Bachelor&apos;s
+              </button>
+              <button
+                type="button"
+                class="chip"
+                role="tab"
+                aria-selected="false"
+                data-degree="masters"
+              >
+                <i class="fa-solid fa-book chip__icon" aria-hidden="true"></i>
+                Master&apos;s
+              </button>
+              <button
+                type="button"
+                class="chip"
+                role="tab"
+                aria-selected="false"
+                data-degree="doctoral"
+              >
+                <i class="fa-solid fa-medal chip__icon" aria-hidden="true"></i>
+                Doctoral
+              </button>
+              <button
+                type="button"
+                class="chip"
+                role="tab"
+                aria-selected="false"
+                data-degree="certificate"
+              >
+                <i class="fa-solid fa-file-certificate chip__icon" aria-hidden="true"></i>
+                Certificate
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="program-finder__panel"
+            id="program-finder-panel"
+            role="tabpanel"
+            aria-labelledby="program-finder-heading"
+            hidden
+          >
+            <div class="program-finder__fields">
+              <div class="program-finder__field">
+                <label class="visually-hidden" for="area-of-study">Area of Study</label>
+                <select id="area-of-study" class="program-finder__select">
+                  <option value="">Area of Study</option>
+                  <option value="business">Business</option>
+                  <option value="counseling">Counseling</option>
+                  <option value="education">Education</option>
+                  <option value="health-sciences">Health Sciences</option>
+                  <option value="nursing">Nursing</option>
+                  <option value="psychology">Psychology</option>
+                  <option value="technology">Technology</option>
+                </select>
+              </div>
+              <div class="program-finder__field">
+                <label class="visually-hidden" for="specialization">Specialization</label>
+                <select id="specialization" class="program-finder__select" disabled>
+                  <option value="">Specialization</option>
+                </select>
+              </div>
+              <a href="#" class="btn btn--primary btn--lg program-finder__cta">
+                Explore my program
+                <svg class="icon-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="content-band">
+        <div class="content-band__bg" aria-hidden="true">
+          <img
+            src="/assets/content-band-desk.png"
+            alt=""
+            class="content-band__bg-image media-img"
+          />
+          <div class="content-band__overlay"></div>
+        </div>
+
+        <section class="carousel" aria-label="Featured stories">
+          <div class="carousel__viewport page-container">
+            <div class="carousel__track">
+              <article class="carousel__slide carousel__slide--active" data-slide="0">
+                <div class="carousel__card">
+                  <div class="carousel__panel" aria-hidden="true"></div>
+                  <span class="carousel__badge badge">Student experience</span>
+                  <div class="carousel__mockup">
+                    <img
+                      src="/assets/carousel-phone-mockup.png"
+                      alt="Capella mobile app showing course dashboard"
+                      class="carousel__image carousel__image--mockup"
+                    />
+                  </div>
+                  <div class="carousel__content">
+                    <h2 class="carousel__title">
+                      You&apos;re busy,<br />
+                      we&apos;re flexible.
+                    </h2>
+                    <p class="carousel__body">
+                      Our FlexPath learning format gives you the ability to make education fit your
+                      life, not the other way around.
+                    </p>
+                    <a href="#" class="btn btn--secondary btn--lg">Button text</a>
+                  </div>
+                </div>
+              </article>
+
+              <article class="carousel__slide" data-slide="1">
+                <div class="carousel__card">
+                  <div class="carousel__panel" aria-hidden="true"></div>
+                  <span class="carousel__badge badge">Alumni stories</span>
+                  <div class="carousel__portrait carousel__portrait--alumni">
+                    <img
+                      src="/assets/carousel-portrait-alumni.png?v=5"
+                      alt="Capella graduate Kenny Taylor"
+                      class="carousel__image carousel__image--portrait"
+                    />
+                  </div>
+                  <div class="carousel__content carousel__content--alumni">
+                    <h2 class="carousel__title">
+                      <span class="carousel__quote-mark" aria-hidden="true">&ldquo;</span>
+                      CAPELLA PREPARED ME for anything my WORK can throw at me&rdquo;
+                    </h2>
+                    <div class="carousel__attribution">
+                      <p class="carousel__name">Kenny Taylor</p>
+                      <p class="carousel__program">
+                        Capella Graduate<br />
+                        MS Human Resource Management
+                      </p>
+                      <p class="carousel__disclaimer">
+                        Actual Capella alum who agreed to appear in our promotional materials.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="carousel__slide" data-slide="2">
+                <div class="carousel__card">
+                  <div class="carousel__panel" aria-hidden="true"></div>
+                  <span class="carousel__badge badge">Faculty</span>
+                  <div class="carousel__portrait carousel__portrait--faculty">
+                    <img
+                      src="/assets/carousel-portrait-faculty.png?v=2"
+                      alt="Capella faculty member"
+                      class="carousel__image carousel__image--portrait carousel__image--faculty"
+                    />
+                  </div>
+                  <div class="carousel__content carousel__content--faculty">
+                    <h2 class="carousel__title">
+                      I ALWAYS PUT MY STUDENTS FIRST WITH EVERYTHING
+                    </h2>
+                    <div class="carousel__attribution">
+                      <p class="carousel__name">Faculty name</p>
+                      <p class="carousel__program">
+                        Capella Staff<br />
+                        MS Human Resource Management
+                      </p>
+                    </div>
+                    <a href="#" class="btn btn--secondary btn--lg">Full bio</a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="carousel__dots page-container" role="tablist" aria-label="Carousel slides">
+            <button
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-label="Slide 1: Student experience"
+              class="carousel__dot carousel__dot--active"
+            ></button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-label="Slide 2: Alumni stories"
+              class="carousel__dot"
+            ></button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-label="Slide 3: Faculty"
+              class="carousel__dot"
+            ></button>
+          </div>
+        </section>
+
+        <section class="stats-section" aria-labelledby="stats-heading">
+          <div class="stats-section__inner page-container">
+          <div class="stats-section__left reveal">
+            <h2 id="stats-heading" class="stats-section__title">
+              You&apos;ve got plans.<br />
+              We&apos;ve got programs.
+            </h2>
+            <div class="stats-section__grid">
+              <div class="stats-section__stat">
+                <span class="stats-section__value">40</span>
+                <span class="stats-section__label">Degree programs</span>
+              </div>
+              <div class="stats-section__stat">
+                <span class="stats-section__value">80</span>
+                <span class="stats-section__label">Specializations</span>
+              </div>
+              <div class="stats-section__stat">
+                <span class="stats-section__value">1,530+</span>
+                <span class="stats-section__label">Courses available</span>
+              </div>
+              <div class="stats-section__stat">
+                <span class="stats-section__value">63%</span>
+                <span class="stats-section__label">Part-time students</span>
+              </div>
+            </div>
+            <p class="stats-section__source">
+              Source:
+              <a
+                href="https://www.capella.edu/content/dam/capella/PDF/FactSheet.pdf"
+                target="_blank"
+                rel="noreferrer"
+                >Capella University Fact Sheet</a
+              >, as of December 31, 2024
+            </p>
+          </div>
+          <div class="stats-section__right reveal" data-reveal-delay="2">
+            <h3 class="stats-section__programs-heading heading-h4">Popular programs</h3>
+            <ul class="stats-section__programs">
+              <li>
+                <a href="#" class="stats-section__program glass-card reveal" data-reveal-delay="0">
+                  <span>
+                    <span class="eyebrow stats-section__degree">BS</span>
+                    <span class="stats-section__program-name">RN-to-BSN</span>
+                  </span>
+                  <svg class="icon-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="stats-section__program glass-card reveal" data-reveal-delay="1">
+                  <span>
+                    <span class="eyebrow stats-section__degree">MS</span>
+                    <span class="stats-section__program-name">MSN</span>
+                  </span>
+                  <svg class="icon-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="stats-section__program glass-card reveal" data-reveal-delay="2">
+                  <span>
+                    <span class="eyebrow stats-section__degree">MBA</span>
+                    <span class="stats-section__program-name">Master of Business Administration</span>
+                  </span>
+                  <svg class="icon-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="stats-section__program glass-card reveal" data-reveal-delay="3">
+                  <span>
+                    <span class="eyebrow stats-section__degree">BS</span>
+                    <span class="stats-section__program-name">BS in Business</span>
+                  </span>
+                  <svg class="icon-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+            <a href="#" class="btn btn--primary btn--lg stats-section__cta">
+              See all Capella programs
+              <svg class="icon-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="tiles-section" aria-labelledby="tiles-heading">
+        <div class="tiles-section__inner page-container">
+          <h2 id="tiles-heading" class="tiles-section__title heading-h2 reveal">Make your move</h2>
+          <div class="tiles-section__grid">
+            <a href="#" class="glass-tile reveal" data-tile="apply" data-reveal-delay="0">
+              <span class="glass-tile__media" aria-hidden="true">
+                <img src="/assets/tile-apply.png" alt="" class="glass-tile__image" />
+                <span class="glass-tile__scrim"></span>
+              </span>
+              <span class="glass-tile__glass" aria-hidden="true"></span>
+              <span class="glass-tile__label">Apply now</span>
+              <span class="glass-tile__icon" aria-hidden="true">
+                <i class="fa-sharp fa-regular fa-school"></i>
+              </span>
+            </a>
+            <a href="#" class="glass-tile reveal" data-tile="admissions" data-reveal-delay="1">
+              <span class="glass-tile__media" aria-hidden="true">
+                <span class="glass-tile__base"></span>
+                <img src="/assets/tile-admissions.png" alt="" class="glass-tile__image" />
+                <span class="glass-tile__scrim"></span>
+              </span>
+              <span class="glass-tile__glass" aria-hidden="true"></span>
+              <span class="glass-tile__label">Learn about admissions</span>
+              <span class="glass-tile__icon" aria-hidden="true">
+                <i class="fa-sharp fa-regular fa-laptop-file"></i>
+              </span>
+            </a>
+            <a href="#" class="glass-tile reveal" data-tile="financial" data-reveal-delay="2">
+              <span class="glass-tile__media" aria-hidden="true">
+                <img src="/assets/tile-financial.png" alt="" class="glass-tile__image" />
+                <span class="glass-tile__scrim"></span>
+              </span>
+              <span class="glass-tile__glass" aria-hidden="true"></span>
+              <span class="glass-tile__label">Navigate financial aid</span>
+              <span class="glass-tile__icon" aria-hidden="true">
+                <i class="fa-sharp fa-regular fa-badge-dollar"></i>
+              </span>
+            </a>
+            <a href="#" class="glass-tile reveal" data-tile="scholarships" data-reveal-delay="3">
+              <span class="glass-tile__media" aria-hidden="true">
+                <img src="/assets/tile-scholarships.png" alt="" class="glass-tile__image" />
+                <span class="glass-tile__scrim"></span>
+              </span>
+              <span class="glass-tile__glass" aria-hidden="true"></span>
+              <span class="glass-tile__label">Explore scholarships</span>
+              <span class="glass-tile__icon" aria-hidden="true">
+                <i class="fa-sharp fa-regular fa-award"></i>
+              </span>
+            </a>
+            <a href="#" class="glass-tile reveal" data-tile="flexpath" data-reveal-delay="4">
+              <span class="glass-tile__media" aria-hidden="true">
+                <img src="/assets/tile-flexpath.png" alt="" class="glass-tile__image" />
+                <span class="glass-tile__scrim"></span>
+              </span>
+              <span class="glass-tile__glass" aria-hidden="true"></span>
+              <span class="glass-tile__label">Explore FlexPath</span>
+              <span class="glass-tile__icon" aria-hidden="true">
+                <i class="fa-sharp fa-regular fa-laptop"></i>
+              </span>
+            </a>
+            <a href="#" class="glass-tile reveal" data-tile="finish" data-reveal-delay="5">
+              <span class="glass-tile__media" aria-hidden="true">
+                <img src="/assets/tile-finish.png" alt="" class="glass-tile__image" />
+                <span class="glass-tile__scrim"></span>
+              </span>
+              <span class="glass-tile__glass" aria-hidden="true"></span>
+              <span class="glass-tile__label">Finish my degree</span>
+              <span class="glass-tile__icon" aria-hidden="true">
+                <i class="fa-sharp fa-regular fa-book-open"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="accreditation" aria-labelledby="accreditation-heading">
+        <div class="accreditation__inner page-container">
+          <div class="accreditation__logos" aria-hidden="true">
+            <img src="/assets/accr-acbsp.svg" alt="" class="accreditation__logo accreditation__logo--acbsp logo-img" />
+            <img src="/assets/accr-cacrep.svg" alt="" class="accreditation__logo accreditation__logo--cacrep logo-img" />
+            <img src="/assets/accr-ccne.png" alt="" class="accreditation__logo accreditation__logo--ccne logo-img" />
+            <img src="/assets/accr-cswe.png" alt="" class="accreditation__logo accreditation__logo--cswe logo-img" />
+          </div>
+          <div class="accreditation__content">
+            <h2 id="accreditation-heading" class="accreditation__title heading-h5">
+              Capella University is accredited by the Higher Learning Commission.
+            </h2>
+            <p class="accreditation__body">
+              Accreditation and recognitions provide the assurance we meet standards for quality of
+              faculty, curriculum, learner services, and fiscal stability.
+            </p>
+            <div class="accreditation__legal">
+              <p>
+                The baccalaureate degree program in nursing, master&apos;s degree program in nursing,
+                and Doctor of Nursing Practice program at Capella University are accredited by the
+                Commission on Collegiate Nursing Education. (<a href="http://www.ccneaccreditation.org" target="_blank" rel="noreferrer">http://www.ccneaccreditation.org</a>)
+              </p>
+              <p>
+                Capella University&apos;s Master of Social Work programs are accredited by the Council
+                on Social Work Education&apos;s Commission on Accreditation. For more information about
+                social work accreditation, visit
+                <a href="https://www.cswe.org/accreditation" target="_blank" rel="noreferrer">https://www.cswe.org/accreditation</a>.
+              </p>
+            </div>
+          </div>
+          <a href="#" class="btn btn--outline btn--md accreditation__cta">See all accreditations</a>
+        </div>
+      </section>
+
+      <section class="action-cta" aria-labelledby="action-cta-heading">
+        <div class="action-cta__panels" aria-hidden="true">
+          <div class="action-cta__panel">
+            <img src="/assets/cta-1.png" alt="Student in business attire" class="media-img" />
+          </div>
+          <div class="action-cta__panel">
+            <img src="/assets/cta-2.png" alt="Student in work jacket" class="media-img" />
+          </div>
+          <div class="action-cta__panel">
+            <img src="/assets/cta-3.png" alt="Nursing student in scrubs" class="media-img" />
+          </div>
+        </div>
+        <div class="action-cta__overlay">
+          <h2 id="action-cta-heading" class="action-cta__title display-lg">what are you waiting for?</h2>
+          <a href="#" class="btn btn--dark btn--lg">
+            Get started
+            <svg class="icon-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner page-container">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <img
+              src="/assets/footer-logo.svg"
+              alt="Capella University"
+              class="footer__logo"
+              width="194"
+              height="82"
+            />
+            <div class="footer__social">
+              <a href="#" aria-label="Facebook"><img src="/assets/social-facebook.svg" alt="" width="24" height="24" /></a>
+              <a href="#" aria-label="X"><img src="/assets/social-x.png" alt="" width="20" height="21" /></a>
+              <a href="#" aria-label="LinkedIn"><img src="/assets/social-linkedin.svg" alt="" width="24" height="24" /></a>
+              <a href="#" aria-label="Instagram"><img src="/assets/social-instagram.svg" alt="" width="24" height="24" /></a>
+              <a href="#" aria-label="YouTube"><img src="/assets/social-youtube.svg" alt="" width="24" height="24" /></a>
+              <a href="#" aria-label="TikTok"><img src="/assets/social-tiktok.svg" alt="" width="24" height="24" /></a>
+            </div>
+          </div>
+          <div class="footer__links">
+            <div class="footer__column">
+              <h3 class="footer__column-heading">Areas of study</h3>
+              <ul>
+                <li><a href="#">Business</a></li>
+                <li><a href="#">Counseling</a></li>
+                <li><a href="#">Education</a></li>
+                <li><a href="#">Health Care Administration</a></li>
+                <li><a href="#">Information Technology</a></li>
+                <li><a href="#">Nursing</a></li>
+                <li><a href="#">Psychology</a></li>
+                <li><a href="#">Public Health</a></li>
+                <li><a href="#">Social Work and Human Services</a></li>
+              </ul>
+            </div>
+            <div class="footer__column">
+              <h3 class="footer__column-heading">About us</h3>
+              <ul>
+                <li><a href="#">Capella Store</a></li>
+                <li><a href="#">Consumer Information Guide</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Capella Blog</a></li>
+                <li><a href="#">Mission and Leadership</a></li>
+                <li><a href="#">Tuition and Fees</a></li>
+                <li><a href="#">Tuition and Financial Aid Policies</a></li>
+                <li><a href="#">University Catalog</a></li>
+                <li><a href="#">University Fact Sheet</a></li>
+              </ul>
+            </div>
+            <div class="footer__column">
+              <h3 class="footer__column-heading">Information for</h3>
+              <ul>
+                <li><a href="#">Accessibility</a></li>
+                <li><a href="#">Alumni Association</a></li>
+                <li><a href="#">Careers at Capella</a></li>
+                <li><a href="#">Commencement</a></li>
+                <li><a href="#">Degree Verification</a></li>
+                <li><a href="#">Employers</a></li>
+                <li><a href="#">Military</a></li>
+                <li><a href="#">News and Media</a></li>
+                <li><a href="#">Professional Licensure Disclosures</a></li>
+                <li><a href="#">Transcripts</a></li>
+                <li><a href="#">Undergrad Honors Pathway</a></li>
+                <li><a href="#">University Policies</a></li>
+                <li><a href="#">Workplace Learning</a></li>
+              </ul>
+            </div>
+            <div class="footer__column">
+              <h3 class="footer__column-heading">Legal</h3>
+              <ul>
+                <li><a href="#">HEERF II Reporting</a></li>
+                <li><a href="#">HEERF III Reporting</a></li>
+                <li><a href="#">03267300_HEERF_Q22022_071022</a></li>
+                <li><a href="#">Legal and Regulatory Information</a></li>
+                <li><a href="#">Massachusetts Disclosures</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Site Map</a></li>
+                <li><a href="#">State Regulatory Information</a></li>
+                <li><a href="#">Terms of Use</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <div class="footer__copyright">
+            <p class="footer__ownership">
+              Capella University is owned by Strategic Education, Inc., which operates a suite of
+              educational institutions, programs and services.
+            </p>
+            <p class="footer__rights">© 2026 Capella University. All rights reserved.</p>
+          </div>
+          <hr class="footer__divider" />
+          <div class="footer__partners">
+            <button type="button" class="footer__partner-nav" aria-label="Previous partners">
+              <img src="/assets/footer-arrow-prev.svg" alt="" width="48" height="48" />
+            </button>
+            <div class="footer__partner-logos">
+              <div class="footer__partner-slot">
+                <img src="/assets/footer-partner-sei.svg" alt="Strategic Education Inc." class="footer__partner-logo" />
+              </div>
+              <div class="footer__partner-slot">
+                <img src="/assets/footer-partner-strayer.svg" alt="Strayer University" class="footer__partner-logo" />
+              </div>
+              <div class="footer__partner-slot">
+                <img src="/assets/footer-partner-devmountain.svg" alt="Devmountain" class="footer__partner-logo" />
+              </div>
+              <div class="footer__partner-slot">
+                <img src="/assets/footer-partner-sophia.svg" alt="Sophia Learning" class="footer__partner-logo" />
+              </div>
+              <div class="footer__partner-slot">
+                <img src="/assets/footer-partner-jwmi.svg" alt="Jack Welch Management Institute" class="footer__partner-logo" />
+              </div>
+            </div>
+            <button type="button" class="footer__partner-nav" aria-label="Next partners">
+              <img src="/assets/footer-arrow-next.svg" alt="" width="48" height="48" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
