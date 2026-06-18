@@ -211,20 +211,23 @@ button {
 }
 
 .chip--active {
-  background: var(--color-boulder-800);
-  border-color: var(--color-boulder-800);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--color-stat-blue);
 }
 
 .chip--active:hover {
-  background: var(--color-boulder-700);
-  border-color: var(--color-boulder-700);
+  background: rgba(255, 255, 255, 0.28);
+  border-color: var(--color-stat-blue);
+}
+
+.chip--active .chip__icon {
+  color: var(--color-stat-blue);
 }
 
 .chip__icon {
   flex-shrink: 0;
   font-size: 16px;
   line-height: 1;
-  opacity: 0.95;
 }
 
 .visually-hidden {
@@ -371,6 +374,33 @@ button {
   transform: translateY(0);
 }
 
+/* Masked word reveal — headings rise up from behind a clip mask, staggered
+   word-by-word as they scroll into view. JS splits the text into words. */
+.reveal-text .word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Give the clip mask room for descenders without shifting layout. */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.reveal-text .word__inner {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  will-change: transform;
+  transition:
+    transform 0.85s var(--ease-out-expo),
+    opacity 0.6s ease;
+  transition-delay: calc(var(--word-index, 0) * 0.045s);
+}
+
+.reveal-text.is-visible .word__inner {
+  transform: translateY(0);
+  opacity: 1;
+}
+
 /* Shared glass card (popular programs, etc.) */
 .glass-card {
   position: relative;
@@ -420,6 +450,12 @@ button {
     transition: none;
   }
 
+  .reveal-text .word__inner {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+
   .glass-tile,
   .glass-tile__image,
   .glass-card {
@@ -433,6 +469,9 @@ button {
 
 /* Utility bar */
 .utility-bar {
+  position: sticky;
+  top: 0;
+  z-index: 101;
   background: var(--color-boulder-800);
   height: 40px;
 }
@@ -465,10 +504,14 @@ button {
   line-height: 1.5;
 }
 
+.utility-bar__cta-short {
+  display: none;
+}
+
 /* Main nav */
 .main-nav {
   position: sticky;
-  top: 0;
+  top: 40px; /* pinned just below the 40px sticky utility bar */
   z-index: 100;
   background: var(--color-uni-black);
   padding-block: 20px;
@@ -548,31 +591,13 @@ button {
   pointer-events: none;
 }
 
-.hero__bg-layer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
 .hero__bg-image {
   position: absolute;
-  max-width: none;
-}
-
-.hero__bg-image--base {
-  width: 122%;
-  height: 185%;
-  left: -12.9%;
-  top: -35.36%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-}
-
-.hero__bg-image--people {
-  width: 111%;
-  height: 119%;
-  left: -7.81%;
-  top: 0.47%;
-  object-fit: cover;
+  object-position: center 30%;
 }
 
 .hero__gradient {
@@ -618,6 +643,8 @@ button {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: min(var(--tiles-max-width), calc(100% - 2 * clamp(20px, 5vw, 60px)));
+  margin-inline: auto;
 }
 
 .program-finder__top {
@@ -643,9 +670,9 @@ button {
 }
 
 .program-finder__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 12px 16px;
   justify-content: flex-end;
 }
 
@@ -739,20 +766,23 @@ button {
 
 .content-band__bg-image {
   position: absolute;
+  /* Vertical overshoot (8% each side) gives the parallax transform room to
+     move without ever exposing an edge of the band. */
   width: 100%;
-  height: 100%;
+  height: 116%;
   left: 0;
-  top: 0;
+  top: -8%;
   object-fit: cover;
   object-position: center center;
+  will-change: transform;
 }
 
 @media (min-width: 1200px) {
   .content-band__bg-image {
     width: 116.68%;
-    height: 117.07%;
+    height: 116%;
     left: -1.88%;
-    top: 0;
+    top: -8%;
   }
 }
 
@@ -774,6 +804,8 @@ button {
 
 .carousel__viewport {
   overflow: hidden;
+  touch-action: pan-y;
+  outline: none;
 }
 
 .carousel__track {
@@ -782,6 +814,17 @@ button {
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
   align-items: stretch;
+  cursor: grab;
+}
+
+.carousel__track.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.carousel__slide img {
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .carousel__slide {
@@ -800,6 +843,19 @@ button {
   flex-direction: column;
   min-height: 480px;
   overflow: hidden;
+  border-radius: var(--radius-card);
+}
+
+/* Mobile/stacked layout: text on top, portrait/phone image at the bottom
+   of the card (matches the Figma mobile design). On desktop these children
+   are absolutely positioned, so `order` has no effect there. */
+.carousel__content {
+  order: 0;
+}
+
+.carousel__mockup,
+.carousel__portrait {
+  order: 1;
 }
 
 .carousel__panel {
@@ -826,7 +882,7 @@ button {
 .carousel__mockup {
   position: relative;
   width: min(280px, 62vw);
-  margin: -20px auto -56px;
+  margin: 8px auto -40px;
   aspect-ratio: 566 / 1039;
   z-index: 2;
   pointer-events: none;
@@ -849,7 +905,7 @@ button {
   position: relative;
   width: 100%;
   height: clamp(300px, 70vw, 420px);
-  margin: 0 auto -16px;
+  margin: 0;
   z-index: 2;
   pointer-events: none;
 }
@@ -858,10 +914,30 @@ button {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: bottom left;
+  object-position: bottom center;
 }
 
 .carousel__image--faculty {
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* Mobile portrait scaling matches the Figma mobile cards: the portrait sits in
+   a full-width, near-square (294 x 299) box anchored at the bottom of the card.
+   Desktop (min-width: 1200px) overrides these with absolute positioning and
+   explicit width/height, so it is unaffected. */
+.carousel__portrait--alumni,
+.carousel__portrait--faculty {
+  width: 100%;
+  aspect-ratio: 294 / 299;
+  height: auto;
+  margin: 0;
+}
+
+/* Alumni: the source asset is a tall transparent cutout (680x1024). Keep the
+   Figma box ratio (294/299) for the correct card height and use cover anchored
+   to the top so the face fills the width without distortion (no object-fit: fill). */
+.carousel__portrait--alumni .carousel__image--portrait {
   object-fit: cover;
   object-position: top center;
 }
@@ -872,7 +948,9 @@ button {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 40px 24px 32px;
+  /* Top padding clears the absolutely-positioned badge (top:24px, ~30px tall)
+     so the title starts below it, matching the Figma mobile card (heading top:78px). */
+  padding: 64px 24px 32px;
   color: var(--color-black);
 }
 
@@ -1022,6 +1100,8 @@ button {
   line-height: 0.9;
   letter-spacing: -1px;
   text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
 }
 
 .stats-section__label {
@@ -1364,22 +1444,24 @@ button {
 }
 
 .action-cta__panels {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   height: 100%;
   min-height: 750px;
 }
 
-.action-cta__panel {
-  position: relative;
-  overflow: hidden;
-}
-
-.action-cta__panel img {
+.action-cta__panels picture {
+  display: block;
   width: 100%;
   height: 100%;
+  min-height: 750px;
+}
+
+.action-cta__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 750px;
   object-fit: cover;
-  object-position: center top;
+  object-position: center;
 }
 
 .action-cta__overlay {
@@ -1421,7 +1503,7 @@ button {
 .footer__brand {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   flex-shrink: 0;
   width: 194px;
@@ -1429,14 +1511,14 @@ button {
 
 .footer__logo {
   width: 194px;
-  height: 82px;
+  height: auto;
   object-fit: contain;
 }
 
 .footer__social {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -1542,61 +1624,23 @@ button {
 }
 
 .footer__partners {
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 48px;
-  align-items: center;
-  gap: 16px;
-}
-
-.footer__partner-nav {
-  flex-shrink: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.footer__partner-nav img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
+.footer__partners::-webkit-scrollbar {
+  display: none;
 }
 
-.footer__partner-nav:hover {
-  opacity: 1;
-}
-
-.footer__partner-logos {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 165px));
-  justify-content: center;
-  gap: 16px;
-  width: 100%;
-  max-width: 1081px;
-  margin-inline: auto;
-  overflow: hidden;
-}
-
-.footer__partner-slot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 70px;
-  width: 100%;
-  max-width: 165px;
-  margin-inline: auto;
-}
-
-.footer__partner-logo {
+.footer__partners-strip {
   display: block;
-  max-width: 100%;
-  max-height: 70px;
-  width: auto;
+  width: 100%;
+  min-width: 760px;
+  max-width: 1440px;
   height: auto;
-  object-fit: contain;
+  margin-inline: auto;
 }
 
 /* Responsive */
@@ -1633,7 +1677,7 @@ button {
   }
 
   .carousel__content {
-    padding: 48px 40px 40px;
+    padding: 64px 40px 40px;
     gap: 32px;
   }
 
@@ -1655,11 +1699,182 @@ button {
   }
 }
 
-@media (min-width: 1200px) {
-  :root {
-    --carousel-peek: 17.5%;
+/* Mobile carousel: reproduce the fixed 294×583 Figma card exactly.
+   Every layer is absolutely positioned using Figma coordinates scaled by --px
+   (1 Figma px = card-width / 294). Card is capped so the phone card stays
+   phone-proportioned instead of ballooning. The wide desktop card takes over
+   at ≥1024 (see below). */
+@media (max-width: 1023px) {
+  .carousel__card {
+    display: block;
+    position: relative;
+    container-type: inline-size;
+    --px: calc(100cqi / 294);
+    aspect-ratio: 294 / 583;
+    /* Responsive: full width on phones, growing to a wider card on tablets
+       (so it fills more of the 1024 viewport instead of a tiny 420px card). */
+    width: 100%;
+    max-width: clamp(345px, 58vw, 560px);
+    margin-inline: auto;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
   }
 
+  .carousel__panel {
+    inset: 0;
+  }
+
+  .carousel__badge {
+    top: 24px;
+    left: 24px;
+    right: auto;
+  }
+
+  /* --- Bottom image layers --- */
+  .carousel__mockup {
+    position: absolute;
+    left: 0;
+    top: calc(250 * var(--px));
+    width: 100%;
+    height: calc(333 * var(--px));
+    margin: 0;
+    aspect-ratio: auto;
+    overflow: hidden;
+    filter: drop-shadow(0 calc(16 * var(--px)) calc(32 * var(--px)) rgba(0, 0, 0, 0.15));
+  }
+
+  /* Figma's mobile crop of the phone fill (matches the source aspect ratio,
+     so the phone is never warped). */
+  .carousel__image--mockup {
+    width: 303.06%;
+    height: 178.37%;
+    left: -102.75%;
+    top: -13.51%;
+    object-fit: cover;
+  }
+
+  .carousel__portrait,
+  .carousel__portrait--alumni,
+  .carousel__portrait--faculty {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: auto;
+  }
+
+  .carousel__portrait--alumni {
+    top: calc(284 * var(--px));
+    height: calc(299 * var(--px));
+  }
+
+  .carousel__portrait--faculty {
+    top: calc(283 * var(--px));
+    height: calc(300 * var(--px));
+  }
+
+  /* cover (never fill) so the figures keep their natural proportions, anchored
+     to the bottom so the lower body always sits on the card's bottom edge. */
+  .carousel__portrait--alumni .carousel__image--portrait,
+  .carousel__portrait--faculty .carousel__image--portrait {
+    object-fit: cover;
+    object-position: center bottom;
+  }
+
+  /* Dark gradient scrim over the bottom of the alumni image so the white
+     legal copy is legible (Figma applies a to-black gradient here). */
+  .carousel__portrait--alumni::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 45%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 100%);
+    pointer-events: none;
+  }
+
+  /* --- Text layers: content wrapper fills the card; each block is placed
+     absolutely at its Figma coordinate. Font sizes stay fixed (not scaled). --- */
+  .carousel__content {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    padding: 0;
+    gap: 0;
+    display: block;
+  }
+
+  .carousel__title {
+    position: absolute;
+    top: calc(78 * var(--px));
+    left: 24px;
+    right: 24px;
+    max-width: none;
+    margin: 0;
+    font-size: clamp(2rem, 9.6vw, 2.75rem);
+    line-height: 0.9;
+    letter-spacing: -0.72px;
+  }
+
+  .carousel__body {
+    position: absolute;
+    top: calc(168 * var(--px));
+    left: 24px;
+    right: 24px;
+    max-width: none;
+    margin: 0;
+    font-size: var(--text-body-sm);
+    line-height: 1.5;
+    color: var(--color-boulder-700);
+  }
+
+  .carousel__attribution {
+    position: absolute;
+    top: calc(202 * var(--px));
+    left: 24px;
+    right: 24px;
+  }
+
+  .carousel__name {
+    margin: 0 0 8px;
+    font-size: var(--text-body);
+    color: var(--color-boulder-700);
+  }
+
+  .carousel__program {
+    margin: 0;
+    font-size: var(--text-body-sm);
+    color: var(--color-boulder-700);
+  }
+
+  /* Disclaimer is nested inside .attribution (top:202), so offset to reach y532. */
+  .carousel__disclaimer {
+    position: absolute;
+    top: calc(330 * var(--px));
+    left: 0;
+    right: 0;
+    width: auto;
+    max-width: none;
+    color: var(--color-white);
+  }
+
+  /* Floating buttons (student + faculty) are centered horizontally at y509. */
+  .carousel__content .btn {
+    position: absolute;
+    top: calc(509 * var(--px));
+    left: 50%;
+    transform: translateX(-50%);
+    min-height: 48px;
+    padding: 12px 20px;
+    font-size: var(--text-body);
+    margin: 0;
+  }
+}
+
+@media (min-width: 1200px) {
   .hero {
     min-height: 844px;
     padding: 68px 100px;
@@ -1674,9 +1889,17 @@ button {
   }
 
   .program-finder__top {
-    gap: 112px;
+    gap: 24px;
   }
 
+  .program-finder__chips {
+    grid-template-columns: repeat(4, max-content);
+  }
+}
+
+/* Wide "desktop" carousel card kicks in at 1024 so tablets get the larger,
+   landscape layout where the portrait overflows the top of the gray panel. */
+@media (min-width: 1024px) {
   .carousel {
     padding-block: 0;
   }
@@ -1686,7 +1909,7 @@ button {
   }
 
   .carousel__slide {
-    flex: 0 0 calc(100% - var(--carousel-peek));
+    flex: 0 0 100%;
   }
 
   .carousel__card {
@@ -1722,6 +1945,9 @@ button {
     aspect-ratio: 566 / 1039;
     margin: 0;
     overflow: visible;
+    /* Phone pokes above the card but is clipped flush at the card's bottom
+       edge (the mockup is 1039 tall, 320 of which falls below the 642 card). */
+    clip-path: inset(0 0 calc(320 * var(--px)) 0);
     filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.18));
   }
 
@@ -1729,7 +1955,8 @@ button {
     position: absolute;
     left: calc(84 * var(--px));
     bottom: 0;
-    top: auto;
+    scale:1.17;
+    top: -3rem;
     width: calc(741 * var(--px));
     height: calc(642 * var(--px));
     margin: 0;
@@ -1738,18 +1965,25 @@ button {
 
   .carousel__image--portrait {
     object-fit: cover;
-    object-position: center top;
+    object-position: center bottom;
+  }
+
+  /* Alumni: the Figma node scales the head-to-knee cutout to fill the whole
+     741x642 slot (object-fit: fill), so Kenny fills the card's left side and
+     his head rises above the card top — matching the design exactly. */
+  .carousel__portrait--alumni .carousel__image--portrait {
+    object-fit: fill;
   }
 
   .carousel__image--faculty {
     object-fit: cover;
-    object-position: center top;
+    object-position: center bottom;
   }
 
   .carousel__portrait--faculty {
     left: calc(60 * var(--px));
-    top: calc(-15 * var(--px));
-    bottom: auto;
+    top: auto;
+    bottom: 0;
     width: calc(660 * var(--px));
     height: calc(657 * var(--px));
   }
@@ -1813,7 +2047,9 @@ button {
     margin-top: 48px;
     margin-bottom: 128px;
   }
+}
 
+@media (min-width: 1200px) {
   .stats-section {
     padding-bottom: 120px;
   }
@@ -1839,42 +2075,38 @@ button {
   .footer__column {
     min-width: 180px;
   }
-
-  .footer__partner-logos {
-    grid-template-columns: repeat(3, minmax(0, 165px));
-  }
 }
 
 @media (max-width: 1024px) {
-  .display-lg,
-  .stats-section__title {
-    font-size: clamp(2rem, 6vw, var(--text-display-stats));
+  /* Mobile display headings = 48px @375 (12.8vw); h2 headings = 36px @375 (9.6vw). */
+  .hero__title.display-xl {
+    font-size: clamp(2.625rem, 12.8vw, var(--text-display-xl));
   }
 
   .stats-section__title {
+    font-size: clamp(2rem, 9.6vw, var(--text-display-stats));
     letter-spacing: -0.01em;
   }
 
   .display-lg {
-    font-size: clamp(2rem, 5vw, var(--text-display));
+    font-size: clamp(2.625rem, 12.8vw, var(--text-display));
   }
 
   .heading-h2 {
-    font-size: clamp(1.75rem, 4vw, var(--text-h2));
+    font-size: clamp(2rem, 9.6vw, var(--text-h2));
     letter-spacing: -0.01em;
   }
 
   .program-finder__title {
-    font-size: clamp(1.75rem, 4vw, var(--text-program-finder));
+    font-size: clamp(2rem, 9.6vw, var(--text-program-finder));
     letter-spacing: -0.01em;
   }
 
-  .carousel__title {
-    letter-spacing: -0.02em;
-  }
+  /* .carousel__title font is owned by the @media (max-width: 1023px) carousel
+     block, so it is not redeclared here. */
 
   .stats-section__value {
-    font-size: clamp(2.5rem, 8vw, var(--text-display-xl));
+    font-size: clamp(2.625rem, 12.8vw, var(--text-display-xl));
     letter-spacing: -0.01em;
   }
 
@@ -1925,7 +2157,7 @@ button {
   }
 
   .tiles-section__title {
-    font-size: clamp(1.75rem, 5vw, var(--text-h2));
+    font-size: clamp(2rem, 9.6vw, var(--text-h2));
     margin-bottom: 40px;
   }
 
@@ -1950,26 +2182,124 @@ button {
 }
 
 @media (max-width: 768px) {
+  /* Utility bar: Log in + phone grouped left, full-bleed red CTA right (Figma 5647:6621). */
+  .utility-bar__inner {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding-left: 15px;
+    padding-right: 0;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
   .utility-bar__link:first-child {
-    display: none;
+    order: 2;
   }
 
   .utility-bar__cta {
-    padding-inline: 16px;
-    font-size: 0.875rem;
+    order: 3;
+    margin-left: auto;
+    height: 40px;
+    padding-inline: 20px;
+    font-size: var(--text-body-sm);
   }
 
-  .action-cta__panels {
-    grid-template-columns: 1fr;
-    min-height: 500px;
-  }
-
-  .action-cta__panel:not(:first-child) {
+  .utility-bar__cta-full {
     display: none;
   }
 
+  .utility-bar__cta-short {
+    display: inline;
+  }
+
+  /* Utility bar stays pinned above the nav on scroll (Figma 107px sticky header). */
+  .utility-bar {
+    position: sticky;
+    top: 0;
+    z-index: 101;
+  }
+
+  /* Main nav: flat, full-width bar (no pill), pinned just below the utility bar. */
+  .main-nav {
+    top: 40px;
+    padding-block: 0;
+    background: var(--color-boulder-900);
+  }
+
+  .main-nav__bar {
+    border-radius: 0;
+    min-height: 67px;
+  }
+
+  .main-nav--scrolled {
+    padding-block: 0;
+  }
+
+  .main-nav--scrolled .main-nav__bar {
+    min-height: 67px;
+  }
+
+  /* Hamburger: bare 3-line icon, 44px tap target. */
+  .main-nav__menu-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 0;
+    background: none;
+  }
+
+  .main-nav__menu-btn:hover {
+    background: none;
+    border-color: transparent;
+  }
+
+  .main-nav__menu-icon,
+  .main-nav__menu-icon::before,
+  .main-nav__menu-icon::after {
+    width: 20px;
+  }
+
+  /* Logo: scale the horizontal lockup to ~27px tall. */
+  .main-nav__logo {
+    gap: 6px;
+  }
+
+  .main-nav__logo-shield {
+    width: 24px;
+    height: 27px;
+  }
+
+  .main-nav__logo-wordmark {
+    width: auto;
+    height: 22px;
+  }
+
+  /* Mobile uses Figma's single-person portrait (served via <picture>);
+     match the design's 375x687 portrait ratio so the full figure shows. */
   .action-cta {
-    min-height: 500px;
+    min-height: 0;
+  }
+
+  .action-cta__panels {
+    min-height: 0;
+    aspect-ratio: 375 / 687;
+  }
+
+  .action-cta__panels picture {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .action-cta__image {
+    min-height: 0;
+    height: 100%;
+    object-position: center;
+  }
+
+  /* Stat labels drop from h6 (20px) to 16px on mobile per Figma 5647:6361. */
+  .stats-section__label {
+    font-size: var(--text-body);
   }
 
   .footer {
@@ -1985,29 +2315,15 @@ button {
     white-space: normal;
     text-align: left;
   }
-
-  .footer__partner-logos {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 16px;
-  }
-
-  .footer__partner-nav {
-    display: none;
-  }
-
-  .footer__partners {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
   .program-finder__chips {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     width: 100%;
   }
 
   .program-finder__chips .chip {
-    width: 100%;
     justify-content: center;
   }
 

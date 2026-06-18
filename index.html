@@ -12,6 +12,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="preload" as="image" href="/assets/hero.png" fetchpriority="high" />
     <script src="https://kit.fontawesome.com/f1bee60eab.js" crossorigin="anonymous"></script>
   </head>
   <body>
@@ -19,7 +20,10 @@
       <div class="utility-bar__inner page-container">
         <a href="tel:1-866-679-9682" class="utility-bar__link">1-866-679-9682</a>
         <a href="#" class="utility-bar__link">Log in</a>
-        <a href="#" class="utility-bar__cta">Request information</a>
+        <a href="#" class="utility-bar__cta">
+          <span class="utility-bar__cta-full">Request information</span>
+          <span class="utility-bar__cta-short">Request info</span>
+        </a>
       </div>
     </div>
 
@@ -33,6 +37,7 @@
               class="main-nav__logo-shield logo-img"
               width="31"
               height="35"
+              decoding="async"
             />
             <img
               src="/assets/nav-wordmark.svg"
@@ -40,6 +45,7 @@
               class="main-nav__logo-wordmark logo-img"
               width="127"
               height="33"
+              decoding="async"
             />
           </a>
           <ul class="main-nav__links">
@@ -74,26 +80,19 @@
     <main>
       <section class="hero" aria-labelledby="hero-heading">
         <div class="hero__background" aria-hidden="true">
-          <div class="hero__bg-layer">
-            <img
-              src="/assets/hero-base.png"
-              alt=""
-              class="hero__bg-image hero__bg-image--base media-img"
-            />
-          </div>
-          <div class="hero__bg-layer">
-            <img
-              src="/assets/hero-people.png"
-              alt=""
-              class="hero__bg-image hero__bg-image--people media-img"
-            />
-          </div>
+          <img
+            src="/assets/hero.png"
+            alt=""
+            class="hero__bg-image media-img"
+            fetchpriority="high"
+            decoding="async"
+          />
           <div class="hero__gradient"></div>
         </div>
         <div class="hero__content">
           <h1 id="hero-heading" class="hero__title display-xl">what can&apos;t you do</h1>
-          <p class="hero__subtitle">Earn a degree built for your career.</p>
-          <a href="#" class="btn btn--white btn--lg">Get started</a>
+          <p class="hero__subtitle reveal" data-reveal-delay="4">Earn a degree built for your career.</p>
+          <a href="#" class="btn btn--white btn--lg hero__cta reveal" data-reveal-delay="5">Get started</a>
         </div>
       </section>
 
@@ -112,7 +111,7 @@
                 aria-selected="false"
                 data-degree="bachelors"
               >
-                <i class="fa-solid fa-graduation-cap chip__icon" aria-hidden="true"></i>
+                <i class="fa-sharp fa-regular fa-graduation-cap chip__icon" aria-hidden="true"></i>
                 Bachelor&apos;s
               </button>
               <button
@@ -122,7 +121,7 @@
                 aria-selected="false"
                 data-degree="masters"
               >
-                <i class="fa-solid fa-book chip__icon" aria-hidden="true"></i>
+                <i class="fa-sharp fa-regular fa-book chip__icon" aria-hidden="true"></i>
                 Master&apos;s
               </button>
               <button
@@ -132,7 +131,7 @@
                 aria-selected="false"
                 data-degree="doctoral"
               >
-                <i class="fa-solid fa-medal chip__icon" aria-hidden="true"></i>
+                <i class="fa-sharp fa-regular fa-medal chip__icon" aria-hidden="true"></i>
                 Doctoral
               </button>
               <button
@@ -142,7 +141,7 @@
                 aria-selected="false"
                 data-degree="certificate"
               >
-                <i class="fa-solid fa-file-certificate chip__icon" aria-hidden="true"></i>
+                <i class="fa-sharp fa-regular fa-file-certificate chip__icon" aria-hidden="true"></i>
                 Certificate
               </button>
             </div>
@@ -192,6 +191,7 @@
             src="/assets/content-band-desk.png"
             alt=""
             class="content-band__bg-image media-img"
+            decoding="async"
           />
           <div class="content-band__overlay"></div>
         </div>
@@ -208,6 +208,8 @@
                       src="/assets/carousel-phone-mockup.png"
                       alt="Capella mobile app showing course dashboard"
                       class="carousel__image carousel__image--mockup"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="carousel__content">
@@ -230,9 +232,11 @@
                   <span class="carousel__badge badge">Alumni stories</span>
                   <div class="carousel__portrait carousel__portrait--alumni">
                     <img
-                      src="/assets/carousel-portrait-alumni.png?v=5"
+                      src="/assets/carousel-portrait-alumni.png?v=8"
                       alt="Capella graduate Kenny Taylor"
                       class="carousel__image carousel__image--portrait"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="carousel__content carousel__content--alumni">
@@ -260,9 +264,11 @@
                   <span class="carousel__badge badge">Faculty</span>
                   <div class="carousel__portrait carousel__portrait--faculty">
                     <img
-                      src="/assets/carousel-portrait-faculty.png?v=2"
+                      src="/assets/carousel-portrait-faculty.png?v=3"
                       alt="Capella faculty member"
                       class="carousel__image carousel__image--portrait carousel__image--faculty"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="carousel__content carousel__content--faculty">
@@ -404,11 +410,11 @@
 
       <section class="tiles-section" aria-labelledby="tiles-heading">
         <div class="tiles-section__inner page-container">
-          <h2 id="tiles-heading" class="tiles-section__title heading-h2 reveal">Make your move</h2>
+          <h2 id="tiles-heading" class="tiles-section__title heading-h2">Make your move</h2>
           <div class="tiles-section__grid">
             <a href="#" class="glass-tile reveal" data-tile="apply" data-reveal-delay="0">
               <span class="glass-tile__media" aria-hidden="true">
-                <img src="/assets/tile-apply.png" alt="" class="glass-tile__image" />
+                <img src="/assets/tile-apply.png" alt="" class="glass-tile__image" loading="lazy" decoding="async" />
                 <span class="glass-tile__scrim"></span>
               </span>
               <span class="glass-tile__glass" aria-hidden="true"></span>
@@ -420,7 +426,7 @@
             <a href="#" class="glass-tile reveal" data-tile="admissions" data-reveal-delay="1">
               <span class="glass-tile__media" aria-hidden="true">
                 <span class="glass-tile__base"></span>
-                <img src="/assets/tile-admissions.png" alt="" class="glass-tile__image" />
+                <img src="/assets/tile-admissions.png" alt="" class="glass-tile__image" loading="lazy" decoding="async" />
                 <span class="glass-tile__scrim"></span>
               </span>
               <span class="glass-tile__glass" aria-hidden="true"></span>
@@ -431,7 +437,7 @@
             </a>
             <a href="#" class="glass-tile reveal" data-tile="financial" data-reveal-delay="2">
               <span class="glass-tile__media" aria-hidden="true">
-                <img src="/assets/tile-financial.png" alt="" class="glass-tile__image" />
+                <img src="/assets/tile-financial.png" alt="" class="glass-tile__image" loading="lazy" decoding="async" />
                 <span class="glass-tile__scrim"></span>
               </span>
               <span class="glass-tile__glass" aria-hidden="true"></span>
@@ -442,7 +448,7 @@
             </a>
             <a href="#" class="glass-tile reveal" data-tile="scholarships" data-reveal-delay="3">
               <span class="glass-tile__media" aria-hidden="true">
-                <img src="/assets/tile-scholarships.png" alt="" class="glass-tile__image" />
+                <img src="/assets/tile-scholarships.png" alt="" class="glass-tile__image" loading="lazy" decoding="async" />
                 <span class="glass-tile__scrim"></span>
               </span>
               <span class="glass-tile__glass" aria-hidden="true"></span>
@@ -453,7 +459,7 @@
             </a>
             <a href="#" class="glass-tile reveal" data-tile="flexpath" data-reveal-delay="4">
               <span class="glass-tile__media" aria-hidden="true">
-                <img src="/assets/tile-flexpath.png" alt="" class="glass-tile__image" />
+                <img src="/assets/tile-flexpath.png" alt="" class="glass-tile__image" loading="lazy" decoding="async" />
                 <span class="glass-tile__scrim"></span>
               </span>
               <span class="glass-tile__glass" aria-hidden="true"></span>
@@ -464,7 +470,7 @@
             </a>
             <a href="#" class="glass-tile reveal" data-tile="finish" data-reveal-delay="5">
               <span class="glass-tile__media" aria-hidden="true">
-                <img src="/assets/tile-finish.png" alt="" class="glass-tile__image" />
+                <img src="/assets/tile-finish.png" alt="" class="glass-tile__image" loading="lazy" decoding="async" />
                 <span class="glass-tile__scrim"></span>
               </span>
               <span class="glass-tile__glass" aria-hidden="true"></span>
@@ -480,10 +486,10 @@
       <section class="accreditation" aria-labelledby="accreditation-heading">
         <div class="accreditation__inner page-container">
           <div class="accreditation__logos" aria-hidden="true">
-            <img src="/assets/accr-acbsp.svg" alt="" class="accreditation__logo accreditation__logo--acbsp logo-img" />
-            <img src="/assets/accr-cacrep.svg" alt="" class="accreditation__logo accreditation__logo--cacrep logo-img" />
-            <img src="/assets/accr-ccne.png" alt="" class="accreditation__logo accreditation__logo--ccne logo-img" />
-            <img src="/assets/accr-cswe.png" alt="" class="accreditation__logo accreditation__logo--cswe logo-img" />
+            <img src="/assets/accr-acbsp.svg" alt="" class="accreditation__logo accreditation__logo--acbsp logo-img" loading="lazy" decoding="async" />
+            <img src="/assets/accr-cacrep.svg" alt="" class="accreditation__logo accreditation__logo--cacrep logo-img" loading="lazy" decoding="async" />
+            <img src="/assets/accr-ccne.png" alt="" class="accreditation__logo accreditation__logo--ccne logo-img" loading="lazy" decoding="async" />
+            <img src="/assets/accr-cswe.png" alt="" class="accreditation__logo accreditation__logo--cswe logo-img" loading="lazy" decoding="async" />
           </div>
           <div class="accreditation__content">
             <h2 id="accreditation-heading" class="accreditation__title heading-h5">
@@ -513,15 +519,16 @@
 
       <section class="action-cta" aria-labelledby="action-cta-heading">
         <div class="action-cta__panels" aria-hidden="true">
-          <div class="action-cta__panel">
-            <img src="/assets/cta-1.png" alt="Student in business attire" class="media-img" />
-          </div>
-          <div class="action-cta__panel">
-            <img src="/assets/cta-2.png" alt="Student in work jacket" class="media-img" />
-          </div>
-          <div class="action-cta__panel">
-            <img src="/assets/cta-3.png" alt="Nursing student in scrubs" class="media-img" />
-          </div>
+          <picture>
+            <source media="(max-width: 768px)" srcset="/assets/cta-mobile.png" />
+            <img
+              src="/assets/cta-people.png"
+              alt="Capella students seated against a warm backdrop"
+              class="action-cta__image media-img"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
         </div>
         <div class="action-cta__overlay">
           <h2 id="action-cta-heading" class="action-cta__title display-lg">what are you waiting for?</h2>
@@ -544,15 +551,17 @@
               alt="Capella University"
               class="footer__logo"
               width="194"
-              height="82"
+              height="41"
+              loading="lazy"
+              decoding="async"
             />
             <div class="footer__social">
-              <a href="#" aria-label="Facebook"><img src="/assets/social-facebook.svg" alt="" width="24" height="24" /></a>
-              <a href="#" aria-label="X"><img src="/assets/social-x.png" alt="" width="20" height="21" /></a>
-              <a href="#" aria-label="LinkedIn"><img src="/assets/social-linkedin.svg" alt="" width="24" height="24" /></a>
-              <a href="#" aria-label="Instagram"><img src="/assets/social-instagram.svg" alt="" width="24" height="24" /></a>
-              <a href="#" aria-label="YouTube"><img src="/assets/social-youtube.svg" alt="" width="24" height="24" /></a>
-              <a href="#" aria-label="TikTok"><img src="/assets/social-tiktok.svg" alt="" width="24" height="24" /></a>
+            <a href="#" aria-label="Facebook"><img src="/assets/social-facebook.svg" alt="" width="24" height="24" loading="lazy" decoding="async" /></a>
+            <a href="#" aria-label="X"><img src="/assets/social-x.png" alt="" width="20" height="21" loading="lazy" decoding="async" /></a>
+            <a href="#" aria-label="LinkedIn"><img src="/assets/social-linkedin.svg" alt="" width="24" height="24" loading="lazy" decoding="async" /></a>
+            <a href="#" aria-label="Instagram"><img src="/assets/social-instagram.svg" alt="" width="24" height="24" loading="lazy" decoding="async" /></a>
+            <a href="#" aria-label="YouTube"><img src="/assets/social-youtube.svg" alt="" width="24" height="24" loading="lazy" decoding="async" /></a>
+            <a href="#" aria-label="TikTok"><img src="/assets/social-tiktok.svg" alt="" width="24" height="24" loading="lazy" decoding="async" /></a>
             </div>
           </div>
           <div class="footer__links">
@@ -628,29 +637,15 @@
           </div>
           <hr class="footer__divider" />
           <div class="footer__partners">
-            <button type="button" class="footer__partner-nav" aria-label="Previous partners">
-              <img src="/assets/footer-arrow-prev.svg" alt="" width="48" height="48" />
-            </button>
-            <div class="footer__partner-logos">
-              <div class="footer__partner-slot">
-                <img src="/assets/footer-partner-sei.svg" alt="Strategic Education Inc." class="footer__partner-logo" />
-              </div>
-              <div class="footer__partner-slot">
-                <img src="/assets/footer-partner-strayer.svg" alt="Strayer University" class="footer__partner-logo" />
-              </div>
-              <div class="footer__partner-slot">
-                <img src="/assets/footer-partner-devmountain.svg" alt="Devmountain" class="footer__partner-logo" />
-              </div>
-              <div class="footer__partner-slot">
-                <img src="/assets/footer-partner-sophia.svg" alt="Sophia Learning" class="footer__partner-logo" />
-              </div>
-              <div class="footer__partner-slot">
-                <img src="/assets/footer-partner-jwmi.svg" alt="Jack Welch Management Institute" class="footer__partner-logo" />
-              </div>
-            </div>
-            <button type="button" class="footer__partner-nav" aria-label="Next partners">
-              <img src="/assets/footer-arrow-next.svg" alt="" width="48" height="48" />
-            </button>
+            <img
+              src="/assets/footer-logos-strip.png"
+              alt="Strategic Education Inc., Strayer University, Devmountain, Sophia Learning, Jack Welch Management Institute"
+              class="footer__partners-strip"
+              width="1440"
+              height="70"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
       </div>
