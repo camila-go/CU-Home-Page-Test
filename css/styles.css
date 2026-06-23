@@ -2013,9 +2013,16 @@ button {
     object-position: center bottom;
   }
 
-  /* Alumni: the Figma node scales the head-to-knee cutout to fill the whole
-     741x642 slot (object-fit: fill), so Kenny fills the card's left side and
-     his head rises above the card top — matching the design exactly. */
+  /* Alumni: the Figma node zooms the cutout in (Kenny fills the left side,
+     head/torso prominent, rising above the card top). The shared portrait box
+     is the literal Figma slot; alumni alone scales up to match that zoom.
+     (Faculty must NOT scale — it has its own exact dimensions below.) */
+  .carousel__portrait--alumni {
+    top: -3rem;
+    bottom: auto;
+    scale: 1.17;
+  }
+
   .carousel__portrait--alumni .carousel__image--portrait {
     object-fit: fill;
   }

@@ -161,10 +161,13 @@ header height, re-tune the reserve values (search `--hero-fold-reserve`).
     - **Buttons** ("Button text", "Full bio") are scaled to the Figma `60px`
       pill (`padding 16/28`, `font 20`, `radius 32`) via `--px` — do **not** let
       them fall back to the unscaled `.btn--lg`, which stretches full-width.
-    - **Portrait sizing is exact Figma, no `scale`.** Alumni = `x84 y0 741×642`;
-      faculty = `x60 y-15 660×657`. A previous `scale: 1.17` on the shared
-      `.carousel__portrait` made the faculty image render 17% too big — it was
-      removed. Keep portraits at their literal Figma `--px` dimensions.
+    - **Portrait sizing.** The shared `.carousel__portrait` box is the literal
+      Figma slot (`x84 y0 741×642`) with **no** scale. **Faculty** uses its own
+      exact dims (`x60 y-15 660×657`, no scale) — do not let it inherit a scale
+      or it renders ~17% too big. **Alumni** alone adds `scale: 1.17` + `top:
+      -3rem` to match the design's zoomed-in framing of Kenny (head/torso
+      prominent, rising above the card). The scale is intentionally
+      alumni-scoped — keep it off the base rule so faculty stays correct.
 - **People are bottom-anchored at every width.** Portrait containers pin to the
   card's bottom edge, and the images use `object-position: center bottom`. The
   alumni image uniquely uses `object-fit: fill` (its ratio matches the slot, so
