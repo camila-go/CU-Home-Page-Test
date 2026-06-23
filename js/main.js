@@ -1,5 +1,3 @@
-import VanillaTilt from 'vanilla-tilt';
-
 const SPECIALIZATIONS = {
   business: ['Accounting', 'Business Administration', 'Human Resource Management', 'Marketing'],
   counseling: ['Clinical Mental Health Counseling', 'School Counseling'],
@@ -519,22 +517,6 @@ function initMobileNav() {
   });
 }
 
-function initTilt() {
-  if (prefersReducedMotion) return;
-
-  const cards = document.querySelectorAll('.stats-section__program');
-  if (!cards.length) return;
-
-  VanillaTilt.init(cards, {
-    max: 8,
-    speed: 400,
-    scale: 1.02,
-    glare: true,
-    'max-glare': 0.18,
-    perspective: 1000,
-  });
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   initCarousel();
   initProgramFinder();
@@ -544,5 +526,4 @@ document.addEventListener('DOMContentLoaded', () => {
   initParallax();
   initNavScroll();
   initMobileNav();
-  initTilt();
 });

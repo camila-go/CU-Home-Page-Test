@@ -14,7 +14,7 @@ edge cases / gotchas that aren't obvious from the code alone.
 | --- | --- |
 | Build tool | [Vite 6](https://vitejs.dev) (`vite`, `vite build`, `vite preview`) |
 | Language | Vanilla HTML + CSS + ES modules. **No framework, no CSS preprocessor.** |
-| JS deps | [`vanilla-tilt`](https://micku7zu.github.io/vanilla-tilt.js/) (3D tilt on popular-program cards) |
+| JS deps | None used at runtime. `vanilla-tilt` is still in `package.json` but **no longer imported** (the 3D tilt was removed — popular-program cards now use a CSS-only hover scale). Safe to `npm uninstall vanilla-tilt`. |
 | Icons | Font Awesome Kit loaded via `<script src="https://kit.fontawesome.com/...">` in `<head>` |
 | Fonts | Adobe Typekit (`acumin-pro-extra-condensed`, `acumin-pro`) + Google Fonts (`Inter`) |
 | Dev server | `npm run dev` → http://localhost:5173 |
@@ -85,10 +85,12 @@ Mobile-first base styles, with these override breakpoints (see `styles.css`):
 
 | Breakpoint | Purpose |
 | --- | --- |
-| `max-width: 768px` | Mobile layout: stacked nav + mobile header, sticky utility bar, mobile type sizes, mobile carousel coordinates |
+| `max-width: 768px` | Mobile layout: stacked nav + mobile header, sticky utility bar, mobile type sizes, mobile carousel coordinates, **program-finder top stacks (title above chips)** |
 | `max-width: 1023px` | **Phone/tablet carousel layout** (fixed `294 × 583` aspect card, absolutely-positioned elements scaled via container query) |
+| `max-width: 1024px` | Tablet: hamburger nav, **program-finder top is the row layout** (title beside 2×2 chips) |
+| `min-width: 769px and max-width: 1199px` | **Tablet/small-desktop hero**: hero gets extra height (reserve 330, capped 640) + higher image crop (`object-position: center 22%`) so the headline clears the people's faces; the program finder (row layout) is short enough to allow it |
 | `min-width: 1024px` | **Wide carousel layout** (`1440 × 642` card, Kenny/faculty overflow above the card) |
-| `min-width: 1200px` | Desktop refinements (content-band bg crop, etc.) |
+| `min-width: 1200px` | Desktop refinements: hero capped at **755px** (Figma) + 4-across program-finder chips, content-band bg crop, etc. |
 | `max-width: 1280px` / `min-width: 1920px` | `--page-gutter` adjustments only (in `tokens.css`) |
 
 ⚠️ **The 1023 / 1024 boundary is load-bearing for the carousel.** The phone and
@@ -114,6 +116,18 @@ utility bar height, **update the nav's `top` to match** (base rule + the
 the nav). `z-index: 100/101` on the header sits above the parallax band
 (`z-index: 1`) and carousel content — keep new stacking contexts below 100.
 
+### Hero height is "fill the fold" (keeps the program finder above the fold)
+
+The hero's `min-height` is **not** a fixed value — it's
+`max(<floor>, min(<cap>, calc(100svh - var(--hero-fold-reserve))))`. The hero
+fills the viewport minus the sticky header above it and the program-finder top
+row below it, so the program finder is always above the fold. `--hero-fold-reserve`
+is tuned per breakpoint (≈ header + program-finder top area). On desktop
+(`≥1200px`) the cap is **755px** (the Figma hero height at 1920); on
+`769–1199px` the hero is allowed to grow (cap 640) so the headline clears the
+people. Uses `svh` so mobile browser chrome doesn't break it. If you change the
+header height, re-tune the reserve values (search `--hero-fold-reserve`).
+
 ---
 
 ## 6. Carousel — the trickiest component
@@ -138,6 +152,19 @@ the nav). `z-index: 100/101` on the header sits above the parallax band
       card.
   - **≥1024px:** card is `1440 × 642` aspect with `overflow: visible`, so the
     portrait figures intentionally **extend above** the card top.
+    - **Content is anchored to exact Figma coordinates**, not flex gaps. Each
+      slide's content (`--student` / `--alumni` / `--faculty` modifier on
+      `.carousel__content`) absolutely positions its title / body / attribution /
+      button at the Figma `y` (e.g. faculty title `184`, attribution `348`,
+      button `472`) via the `--px` unit. This avoids vertical drift from
+      accumulated line-height.
+    - **Buttons** ("Button text", "Full bio") are scaled to the Figma `60px`
+      pill (`padding 16/28`, `font 20`, `radius 32`) via `--px` — do **not** let
+      them fall back to the unscaled `.btn--lg`, which stretches full-width.
+    - **Portrait sizing is exact Figma, no `scale`.** Alumni = `x84 y0 741×642`;
+      faculty = `x60 y-15 660×657`. A previous `scale: 1.17` on the shared
+      `.carousel__portrait` made the faculty image render 17% too big — it was
+      removed. Keep portraits at their literal Figma `--px` dimensions.
 - **People are bottom-anchored at every width.** Portrait containers pin to the
   card's bottom edge, and the images use `object-position: center bottom`. The
   alumni image uniquely uses `object-fit: fill` (its ratio matches the slot, so
@@ -158,8 +185,12 @@ All live in `main.js`, initialized on `DOMContentLoaded`. Every one is
 | `initRevealAnimations()` | Fade-up for elements with `.reveal`. Optional stagger via `data-reveal-delay="N"` (× 80ms). | IntersectionObserver |
 | `initCountUp()` | Animates the stats numbers (40 / 80 / 1,530+ / 63%) counting up with a custom cubic-bezier ease. Preserves prefixes/suffixes/grouping. | IntersectionObserver (threshold 0.4) |
 | `initParallax()` | Translates the content-band background image on scroll for depth. | `scroll`/`resize`, throttled with `requestAnimationFrame` |
-| `initTilt()` | VanillaTilt 3D tilt + glare on `.stats-section__program` cards. | pointer hover |
+| Card hover scale | CSS-only `transform: scale(1.02)` on `.stats-section__program:hover` (replaced the removed VanillaTilt 3D tilt — it caused a "jiggle"). Disabled under reduced-motion. | hover |
 | Glass shine | CSS-only diagonal sheen sweep on `.glass-card:hover` (`::before`). | hover |
+
+> **Removed:** `initTilt()` / VanillaTilt. The cursor-following 3D tilt on the
+> popular-program cards read as a jiggle and was replaced by the CSS hover scale
+> above. The dependency is still in `package.json` but unused (§1).
 
 ### Text-reveal details / gotchas
 - Headings that get the effect are listed in `TEXT_REVEAL_SELECTORS`. To add
@@ -178,6 +209,11 @@ All live in `main.js`, initialized on `DOMContentLoaded`. Every one is
 - JS amplitude (`rect.height * 0.06`) is deliberately **less than** the 8% CSS
   overshoot. If you increase the amplitude, increase the overshoot too or the
   band edge will show.
+- **The desk image starts partway down the band, not at the top.** Per Figma the
+  "Content Section Background Image" begins ~lower-third of the carousel, so
+  `.content-band__bg` is offset (`top: var(--content-bg-top, 26%)`) with a top
+  mask fade — the area above stays page-black. Adjust `--content-bg-top` to move
+  the desk's start up/down.
 
 ---
 
@@ -226,10 +262,15 @@ All live in `main.js`, initialized on `DOMContentLoaded`. Every one is
 - Images with intrinsic `width`/`height` keep them to avoid layout shift (CLS);
   the rest are CSS-sized via `object-fit`.
 
+- **Tile images were downsized.** `tile-finish.png` (was 4096×4096 / 28 MB) and
+  `tile-apply.png` (was 3000×2112 / 8.6 MB) rendered in ~380px boxes and loaded
+  far slower than the others; they're now ~1000–1200px / ~1.6–1.8 MB, in line
+  with the rest. If you re-export these, keep them ≲1200px on the long edge.
+
 ### Suggested next steps (not yet done)
 - Convert large PNGs (`hero.png`, `content-band-desk.png`, carousel portraits,
   `cta-*.png`) to **WebP/AVIF** with PNG fallback via `<picture>`. These are the
-  biggest payloads on the page.
+  biggest payloads on the page. (The tiles are now reasonable — see above.)
 - Add `srcset`/`sizes` for the hero and CTA art to serve smaller files to phones.
 - Self-host fonts (or add `&display=swap` is already set for Inter) and consider
   preloading the primary display font to reduce FOUT on the hero headline.
@@ -261,6 +302,10 @@ browsers:
 | Which headings animate in | `TEXT_REVEAL_SELECTORS` in `js/main.js` |
 | Carousel behavior / drag | `initCarousel()` in `js/main.js` |
 | Stat numbers or count-up speed | the markup values + `data-count-duration` attr (`js/main.js`) |
+| Stat number size / overlap | `.stats-section__value` font is `min(clamp(…12.8vw…), 44cqi)`; each `.stats-section__stat` is a container so the value scales to its cell and can't overflow into the next stat |
+| Hero height / above-the-fold reserve | `--hero-fold-reserve` + the `min-height` `max(floor, min(cap, …))` on `.hero` (§5) |
+| Where the desk background starts | `--content-bg-top` on `.content-band__bg` (§7) |
 | Parallax strength | amplitude factor in `initParallax()` + CSS overshoot (§7) |
 | Sticky header offsets | `.utility-bar` / `.main-nav` `top`/`z-index` (§5) |
 | Program-finder dropdown options | `SPECIALIZATIONS` map in `js/main.js` |
+| "See all Capella programs" button alignment | `.stats-section__cta { align-self }` (right-aligned/flush with cards on desktop) |

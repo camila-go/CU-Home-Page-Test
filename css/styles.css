@@ -413,7 +413,8 @@ button {
   transition:
     background var(--duration-med) var(--ease-out-expo),
     border-color var(--duration-med) var(--ease-out-expo),
-    box-shadow var(--duration-med) var(--ease-out-expo);
+    box-shadow var(--duration-med) var(--ease-out-expo),
+    transform var(--duration-med) var(--ease-out-expo);
 }
 
 .glass-card::before {
@@ -580,7 +581,12 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  min-height: clamp(480px, 65vh, 844px);
+  /* Keep the program finder above the fold: the hero fills the viewport
+     minus the sticky header above it and the program-finder top row below
+     it. --hero-fold-reserve ≈ sticky header + program-finder top area, tuned
+     per breakpoint. svh keeps it correct when mobile browser chrome shows. */
+  --hero-fold-reserve: 512px;
+  min-height: max(300px, calc(100svh - var(--hero-fold-reserve)));
   padding: 48px 24px;
   overflow: hidden;
 }
@@ -759,9 +765,17 @@ button {
 
 .content-band__bg {
   position: absolute;
-  inset: 0;
+  /* The desk image starts partway down the band (Figma: ~lower third of the
+     carousel), not behind the whole carousel. The area above stays the page
+     black; a top mask fades the desk in so there's no hard edge. */
+  top: var(--content-bg-top, 26%);
+  right: 0;
+  bottom: 0;
+  left: 0;
   pointer-events: none;
   overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 10%);
 }
 
 .content-band__bg-image {
@@ -1085,7 +1099,12 @@ button {
   margin-bottom: 64px;
 }
 
+/* Each stat is a container so its value scales to the cell's actual width.
+   The cell narrows sharply once the programs panel sits beside the stats
+   (~half-width left column, 2-up grid), so a viewport-based size would let the
+   long "1,530+" value overflow into the next stat. */
 .stats-section__stat {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1096,7 +1115,11 @@ button {
   font-style: normal;
   font-weight: var(--weight-display-black);
   font-synthesis: none;
-  font-size: var(--text-display-xl);
+  /* Viewport-based scale (100px desktop → ~48px mobile, matching Figma),
+     then capped to the stat cell width (44cqi ≈ widest value "1,530+"
+     fitting the cell) so it never overflows / overlaps in the narrow
+     half-width-column zone (~768–1180px). */
+  font-size: min(clamp(2.625rem, 12.8vw, var(--text-display-xl)), 44cqi);
   line-height: 0.9;
   letter-spacing: -1px;
   text-transform: uppercase;
@@ -1160,6 +1183,18 @@ button {
   z-index: 2;
 }
 
+/* Subtle zoom on hover, preserving the lift the (removed) 3D tilt provided
+   without the cursor-following jiggle. */
+.stats-section__program:hover {
+  transform: scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stats-section__program:hover {
+    transform: none;
+  }
+}
+
 .stats-section__degree {
   display: block;
   margin-bottom: 4px;
@@ -1174,7 +1209,9 @@ button {
 }
 
 .stats-section__cta {
-  align-self: center;
+  /* Right-aligned, flush with the program cards (Figma: button x242 in the
+     573-wide column). */
+  align-self: flex-end;
 }
 
 /* Tiles — glass quicklinks */
@@ -1646,6 +1683,7 @@ button {
 /* Responsive */
 @media (min-width: 768px) {
   .hero {
+    --hero-fold-reserve: 460px;
     padding: 56px 48px;
   }
 
@@ -1876,7 +1914,12 @@ button {
 
 @media (min-width: 1200px) {
   .hero {
-    min-height: 844px;
+    /* Row layout for the program-finder top (title beside 4 chips), so it
+       needs less reserved space. Cap the hero at the Figma design height
+       (755px @1920) on tall screens; on shorter viewports it still shrinks
+       so the program finder stays above the fold. */
+    --hero-fold-reserve: 360px;
+    min-height: max(360px, min(755px, calc(100svh - var(--hero-fold-reserve))));
     padding: 68px 100px;
   }
 
@@ -1951,12 +1994,14 @@ button {
     filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.18));
   }
 
+  /* Portrait sized/placed at the exact Figma coordinates (alumni cutout:
+     x84 y0, 741x642). No scale — the previous scale:1.17 made the faculty
+     image render 17% too large. */
   .carousel__portrait {
     position: absolute;
     left: calc(84 * var(--px));
-    bottom: 0;
-    scale:1.17;
-    top: -3rem;
+    top: 0;
+    bottom: auto;
     width: calc(741 * var(--px));
     height: calc(642 * var(--px));
     margin: 0;
@@ -1980,10 +2025,11 @@ button {
     object-position: center bottom;
   }
 
+  /* Faculty image: Figma x60 y-15, 660x657 (head rises just above the card). */
   .carousel__portrait--faculty {
     left: calc(60 * var(--px));
-    top: auto;
-    bottom: 0;
+    top: calc(-15 * var(--px));
+    bottom: auto;
     width: calc(660 * var(--px));
     height: calc(657 * var(--px));
   }
@@ -2024,23 +2070,126 @@ button {
     max-width: calc(470 * var(--px));
   }
 
+  /* Alumni content anchored to exact Figma Y positions (title 169, name 380,
+     program 417, disclaimer 512) so the disclaimer doesn't drift down from
+     accumulated line-height. The attribution wrapper is anchored at the name's
+     Y, and its children offset from there. */
   .carousel__content--alumni {
-    top: calc(169 * var(--px));
+    top: 0;
     left: calc(758 * var(--px));
+    width: calc(547 * var(--px));
+    height: 100%;
+    display: block;
     gap: 0;
   }
 
   .carousel__content--alumni .carousel__title {
-    margin-bottom: calc(34 * var(--px));
+    position: absolute;
+    top: calc(169 * var(--px));
+    left: 0;
+    width: calc(547 * var(--px));
+    margin: 0;
+  }
+
+  .carousel__content--alumni .carousel__attribution {
+    position: absolute;
+    top: calc(380 * var(--px));
+    left: 0;
+    width: calc(547 * var(--px));
+    margin: 0;
+  }
+
+  .carousel__content--alumni .carousel__name {
+    margin: 0;
   }
 
   .carousel__content--alumni .carousel__program {
-    margin-bottom: calc(48 * var(--px));
+    position: absolute;
+    top: calc(37 * var(--px));
+    margin: 0;
   }
 
-  .carousel__content--faculty {
+  .carousel__content--alumni .carousel__disclaimer {
+    position: absolute;
+    top: calc(132 * var(--px));
+    width: calc(470 * var(--px));
+    margin: 0;
+  }
+
+  /* Student card: anchor to exact Figma Y (title 184, body 348, button 440)
+     and scale the button (166x60, 28/16 padding) via --px instead of the
+     unscaled, full-width btn--lg. */
+  .carousel__content--student {
+    top: 0;
+    left: calc(758 * var(--px));
+    width: calc(547 * var(--px));
+    height: 100%;
+    display: block;
+    gap: 0;
+  }
+
+  .carousel__content--student > * {
+    position: absolute;
+    left: 0;
+    margin: 0;
+  }
+
+  .carousel__content--student .carousel__title {
     top: calc(184 * var(--px));
-    gap: calc(28 * var(--px));
+    width: calc(547 * var(--px));
+  }
+
+  .carousel__content--student .carousel__body {
+    top: calc(348 * var(--px));
+    width: calc(557 * var(--px));
+  }
+
+  .carousel__content--student .btn {
+    top: calc(440 * var(--px));
+    min-height: calc(60 * var(--px));
+    height: calc(60 * var(--px));
+    padding: calc(16 * var(--px)) calc(28 * var(--px));
+    font-size: calc(20 * var(--px));
+    border-radius: calc(32 * var(--px));
+    transform: none;
+  }
+
+  /* Faculty content is anchored to the exact Figma Y positions (title 184,
+     attribution 348, button 472) rather than a uniform flex gap, and the
+     button is scaled to the Figma 126x60 spec via --px instead of inheriting
+     the unscaled, full-width btn--lg. */
+  .carousel__content--faculty {
+    top: 0;
+    left: calc(758 * var(--px));
+    width: calc(547 * var(--px));
+    height: 100%;
+    display: block;
+    gap: 0;
+  }
+
+  .carousel__content--faculty > * {
+    position: absolute;
+    left: 0;
+    margin: 0;
+  }
+
+  .carousel__content--faculty .carousel__title {
+    top: calc(184 * var(--px));
+    width: calc(547 * var(--px));
+  }
+
+  .carousel__content--faculty .carousel__attribution {
+    top: calc(348 * var(--px));
+  }
+
+  .carousel__content--faculty .btn {
+    top: calc(472 * var(--px));
+    min-height: calc(60 * var(--px));
+    height: calc(60 * var(--px));
+    padding: calc(16 * var(--px)) calc(28 * var(--px));
+    font-size: calc(20 * var(--px));
+    border-radius: calc(32 * var(--px));
+    transform: none;
   }
 
   .carousel__dots {
@@ -2106,7 +2255,8 @@ button {
      block, so it is not redeclared here. */
 
   .stats-section__value {
-    font-size: clamp(2.625rem, 12.8vw, var(--text-display-xl));
+    /* Font size is owned by the container-query rule on .stats-section__value
+       (scales to the left column), so only the tighter tracking is set here. */
     letter-spacing: -0.01em;
   }
 
@@ -2133,14 +2283,23 @@ button {
     gap: 24px;
   }
 
+  /* Tighter vertical rhythm when stacked so the finder stays above the fold,
+     notably on landscape tablets (1024x768). */
+  .program-finder {
+    padding-block: 40px;
+  }
+
+  /* Tablet keeps the desktop row layout (title beside the 2x2 chips); only
+     phones (<=768px) stack it (see the max-width:768 block). */
   .program-finder__top {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
+    gap: 24px;
     min-height: 0;
   }
 
   .program-finder__chips {
-    justify-content: flex-start;
+    justify-content: flex-end;
   }
 
   .program-finder__fields {
@@ -2182,6 +2341,11 @@ button {
 }
 
 @media (max-width: 768px) {
+  /* Phones stack the program-finder title above the chips. */
+  .program-finder__top {
+    flex-direction: column;
+  }
+
   /* Utility bar: Log in + phone grouped left, full-bleed red CTA right (Figma 5647:6621). */
   .utility-bar__inner {
     max-width: none;
@@ -2330,5 +2494,21 @@ button {
   .stats-section__grid {
     grid-template-columns: 1fr;
     gap: 32px;
+  }
+}
+
+/* Tablet / small-desktop (769–1199px): the program finder is the shorter row
+   layout here, so the hero gets extra height and a higher image crop (22%) so
+   the bottom-anchored headline sits below the people's faces instead of across
+   them. Phones (<=768px, column finder) and desktop (>=1200px, 755px hero)
+   are unaffected. */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .hero {
+    --hero-fold-reserve: 330px;
+    min-height: max(360px, min(640px, calc(100svh - var(--hero-fold-reserve))));
+  }
+
+  .hero__bg-image {
+    object-position: center 22%;
   }
 }
