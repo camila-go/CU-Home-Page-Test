@@ -519,16 +519,21 @@
 
       <section class="action-cta" aria-labelledby="action-cta-heading">
         <div class="action-cta__panels" aria-hidden="true">
-          <picture>
-            <source media="(max-width: 768px)" srcset="/assets/cta-mobile.png" />
-            <img
-              src="/assets/cta-people.png"
-              alt="Capella students seated against a warm backdrop"
-              class="action-cta__image media-img"
-              loading="lazy"
-              decoding="async"
-            />
-          </picture>
+          <!-- Each panel serves WebM (VP9) where supported and falls back to
+               MP4 (AV1) otherwise. Muted + playsinline so they autoplay as
+               background video on all browsers (incl. iOS). -->
+          <video class="action-cta__video" autoplay loop muted playsinline preload="metadata">
+            <source src="/assets/videos/leftLady_vp9.webm" type="video/webm" />
+            <source src="/assets/videos/leftLady_av1.mp4" type="video/mp4" />
+          </video>
+          <video class="action-cta__video" autoplay loop muted playsinline preload="metadata">
+            <source src="/assets/videos/middleMan_vp9.webm" type="video/webm" />
+            <source src="/assets/videos/middleMan_av1.mp4" type="video/mp4" />
+          </video>
+          <video class="action-cta__video" autoplay loop muted playsinline preload="metadata">
+            <source src="/assets/videos/rightLady_vp9.webm" type="video/webm" />
+            <source src="/assets/videos/rightLady_av1.mp4" type="video/mp4" />
+          </video>
         </div>
         <div class="action-cta__overlay">
           <h2 id="action-cta-heading" class="action-cta__title display-lg">what are you waiting for?</h2>
