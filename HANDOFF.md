@@ -123,10 +123,18 @@ The hero's `min-height` is **not** a fixed value — it's
 fills the viewport minus the sticky header above it and the program-finder top
 row below it, so the program finder is always above the fold. `--hero-fold-reserve`
 is tuned per breakpoint (≈ header + program-finder top area). On desktop
-(`≥1200px`) the cap is **755px** (the Figma hero height at 1920); on
-`769–1199px` the hero is allowed to grow (cap 640) so the headline clears the
-people. Uses `svh` so mobile browser chrome doesn't break it. If you change the
-header height, re-tune the reserve values (search `--hero-fold-reserve`).
+(`≥1200px`) the cap is **744px** (the Figma hero height); on `769–1199px` the
+hero is allowed to grow (cap 640) so the headline clears the people. Uses `svh`
+so mobile browser chrome doesn't break it. If you change the header height,
+re-tune the reserve values (search `--hero-fold-reserve`).
+
+**Headline-vs-faces crop:** the hero headline is bottom-anchored, so as the hero
+shrinks toward the fold the people must sit high enough that the headline lands
+on their torsos, not their faces. The image crop is raised per breakpoint via
+`object-position` on `.hero__bg-image`: base/mobile `center 30%`, tablet
+(`769–1199px`) `center 22%`, desktop (`≥1200px`) `center 72%`. If you re-tune
+the hero height or reserve, re-check the headline doesn't ride up onto faces at
+the **shorter** desktop heights (e.g. 1920×1000) — that's where it bites first.
 
 ---
 

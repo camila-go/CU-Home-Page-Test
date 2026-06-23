@@ -1916,11 +1916,18 @@ button {
   .hero {
     /* Row layout for the program-finder top (title beside 4 chips), so it
        needs less reserved space. Cap the hero at the Figma design height
-       (755px @1920) on tall screens; on shorter viewports it still shrinks
-       so the program finder stays above the fold. */
+       (744px) on larger viewports; on shorter ones it still shrinks so the
+       program finder stays above the fold. */
     --hero-fold-reserve: 360px;
-    min-height: max(360px, min(755px, calc(100svh - var(--hero-fold-reserve))));
+    min-height: max(360px, min(744px, calc(100svh - var(--hero-fold-reserve))));
     padding: 68px 100px;
+  }
+
+  /* Raise the image crop so the people sit high in the frame and the
+     bottom-anchored headline lands on their torsos, not their faces —
+     holds across desktop heights as the hero shrinks toward the fold. */
+  .hero__bg-image {
+    object-position: center 72%;
   }
 
   .program-finder {
