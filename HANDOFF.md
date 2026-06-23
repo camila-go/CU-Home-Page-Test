@@ -124,8 +124,11 @@ fills the viewport minus the sticky header above it and the program-finder top
 row below it, so the program finder is always above the fold. `--hero-fold-reserve`
 is tuned per breakpoint (≈ header + program-finder top area). On desktop
 (`≥1200px`) the cap is **744px** (the Figma hero height); on `769–1199px` the
-hero is allowed to grow (cap 640) so the headline clears the people. Uses `svh`
-so mobile browser chrome doesn't break it. If you change the header height,
+hero is allowed to grow (cap 640) so the headline clears the people; on mobile
+(`<769px`) it has a **360px floor** (the Figma mobile hero height) — on the
+shortest phones this pushes the (4-chip) program finder a few px below the fold,
+which is fine on a scrolling mobile page and matches the design. Uses `svh` so
+mobile browser chrome doesn't break it. If you change the header height,
 re-tune the reserve values (search `--hero-fold-reserve`).
 
 **Headline-vs-faces crop:** the hero headline is bottom-anchored, so as the hero

@@ -581,12 +581,13 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  /* Keep the program finder above the fold: the hero fills the viewport
-     minus the sticky header above it and the program-finder top row below
-     it. --hero-fold-reserve ≈ sticky header + program-finder top area, tuned
-     per breakpoint. svh keeps it correct when mobile browser chrome shows. */
+  /* Fill the viewport minus the sticky header + program-finder top so the
+     finder stays above the fold, but never shorter than the Figma mobile hero
+     height (360px). --hero-fold-reserve ≈ sticky header + program-finder top
+     area, tuned per breakpoint. svh keeps it correct when mobile browser
+     chrome shows. (769px+ restate this min-height with their own caps.) */
   --hero-fold-reserve: 512px;
-  min-height: max(300px, calc(100svh - var(--hero-fold-reserve)));
+  min-height: max(360px, calc(100svh - var(--hero-fold-reserve)));
   padding: 48px 24px;
   overflow: hidden;
 }
