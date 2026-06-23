@@ -86,9 +86,10 @@ Mobile-first base styles, with these override breakpoints (see `styles.css`):
 | Breakpoint | Purpose |
 | --- | --- |
 | `max-width: 768px` | Mobile layout: stacked nav + mobile header, sticky utility bar, mobile type sizes, mobile carousel coordinates, **program-finder top stacks (title above chips)** |
+| `max-width: 640px` | Phone: program-finder chips become a **2×2 grid** (`grid-template-columns: 1fr 1fr`), stats grid single-column |
 | `max-width: 1023px` | **Phone/tablet carousel layout** (fixed `294 × 583` aspect card, absolutely-positioned elements scaled via container query) |
 | `max-width: 1024px` | Tablet: hamburger nav, **program-finder top is the row layout** (title beside 2×2 chips) |
-| `min-width: 769px and max-width: 1199px` | **Tablet/small-desktop hero**: hero gets extra height (reserve 330, capped 640) + higher image crop (`object-position: center 22%`) so the headline clears the people's faces; the program finder (row layout) is short enough to allow it |
+| `min-width: 769px and max-width: 1199px` | **Tablet/small-desktop hero**: hero gets extra height (reserve 330, capped `--hero-height-tablet-max` = 640) since the program finder (row layout) is short |
 | `min-width: 1024px` | **Wide carousel layout** (`1440 × 642` card, Kenny/faculty overflow above the card) |
 | `min-width: 1200px` | Desktop refinements: hero capped at **755px** (Figma) + 4-across program-finder chips, content-band bg crop, etc. |
 | `max-width: 1280px` / `min-width: 1920px` | `--page-gutter` adjustments only (in `tokens.css`) |
@@ -122,22 +123,22 @@ The hero's `min-height` is **not** a fixed value — it's
 `max(<floor>, min(<cap>, calc(100svh - var(--hero-fold-reserve))))`. The hero
 fills the viewport minus the sticky header above it and the program-finder top
 row below it, so the program finder is always above the fold. `--hero-fold-reserve`
-is tuned per breakpoint (≈ header + program-finder top area). On desktop
-(`≥1200px`) the cap is **744px** (the Figma hero height); on `769–1199px` the
-hero is allowed to grow (cap 640) so the headline clears the people; on mobile
-(`<769px`) it has a **360px floor** (the Figma mobile hero height) — on the
-shortest phones this pushes the (4-chip) program finder a few px below the fold,
-which is fine on a scrolling mobile page and matches the design. Uses `svh` so
-mobile browser chrome doesn't break it. If you change the header height,
-re-tune the reserve values (search `--hero-fold-reserve`).
+is tuned per breakpoint (≈ header + program-finder top area). The cap/floor use
+the Figma height tokens in `tokens.css`: `--hero-height` (744, desktop ≥1200px
+cap), `--hero-height-tablet-max` (640, 769–1199px cap), `--hero-height-mobile`
+(360, the `<769px` floor). On the shortest phones the 360 floor pushes the
+(4-chip) program finder a few px below the fold — fine on a scrolling mobile
+page and matches the design. Uses `svh` so mobile browser chrome doesn't break
+it. If you change the header height, re-tune the reserve values (search
+`--hero-fold-reserve`); to change the design heights, edit the tokens.
 
-**Headline-vs-faces crop:** the hero headline is bottom-anchored, so as the hero
-shrinks toward the fold the people must sit high enough that the headline lands
-on their torsos, not their faces. The image crop is raised per breakpoint via
-`object-position` on `.hero__bg-image`: base/mobile `center 30%`, tablet
-(`769–1199px`) `center 22%`, desktop (`≥1200px`) `center 72%`. If you re-tune
-the hero height or reserve, re-check the headline doesn't ride up onto faces at
-the **shorter** desktop heights (e.g. 1920×1000) — that's where it bites first.
+**Image crop is centered (`object-position: center center`) at every width** —
+the 5 people are horizontally centered in the source with headroom above, so
+centering keeps heads uncropped even on ultra-wide viewports (e.g. 2560px) while
+the bottom-anchored headline still lands on the torsos. There are intentionally
+**no per-breakpoint `object-position` overrides** — a non-centered crop clipped
+heads on wide viewports. If you ever reintroduce one, re-check head-cropping at
+2560px-wide and headline-on-faces at the short desktop heights (1920×1000).
 
 ---
 

@@ -587,7 +587,7 @@ button {
      area, tuned per breakpoint. svh keeps it correct when mobile browser
      chrome shows. (769px+ restate this min-height with their own caps.) */
   --hero-fold-reserve: 512px;
-  min-height: max(360px, calc(100svh - var(--hero-fold-reserve)));
+  min-height: max(var(--hero-height-mobile), calc(100svh - var(--hero-fold-reserve)));
   padding: 48px 24px;
   overflow: hidden;
 }
@@ -604,7 +604,11 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  /* People are horizontally centered in the source with headroom above; center
+     the crop so heads aren't cut at any width (the bottom-anchored headline
+     still lands on the torsos). Held at every breakpoint — no per-breakpoint
+     object-position overrides. */
+  object-position: center center;
 }
 
 .hero__gradient {
@@ -1917,18 +1921,11 @@ button {
   .hero {
     /* Row layout for the program-finder top (title beside 4 chips), so it
        needs less reserved space. Cap the hero at the Figma design height
-       (744px) on larger viewports; on shorter ones it still shrinks so the
-       program finder stays above the fold. */
+       on larger viewports; on shorter ones it still shrinks so the program
+       finder stays above the fold. (Image crop is centered globally.) */
     --hero-fold-reserve: 360px;
-    min-height: max(360px, min(744px, calc(100svh - var(--hero-fold-reserve))));
+    min-height: max(var(--hero-height-mobile), min(var(--hero-height), calc(100svh - var(--hero-fold-reserve))));
     padding: 68px 100px;
-  }
-
-  /* Raise the image crop so the people sit high in the frame and the
-     bottom-anchored headline lands on their torsos, not their faces —
-     holds across desktop heights as the hero shrinks toward the fold. */
-  .hero__bg-image {
-    object-position: center 72%;
   }
 
   .program-finder {
@@ -2497,8 +2494,9 @@ button {
 }
 
 @media (max-width: 640px) {
+  /* 2x2 chip grid on phones, matching the Figma mobile design. */
   .program-finder__chips {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     width: 100%;
   }
 
@@ -2513,17 +2511,12 @@ button {
 }
 
 /* Tablet / small-desktop (769–1199px): the program finder is the shorter row
-   layout here, so the hero gets extra height and a higher image crop (22%) so
-   the bottom-anchored headline sits below the people's faces instead of across
-   them. Phones (<=768px, column finder) and desktop (>=1200px, 755px hero)
-   are unaffected. */
+   layout here, so the hero gets extra height (capped below the desktop height)
+   so it isn't cramped. Image crop is centered globally. Phones (<=768px) and
+   desktop (>=1200px) are unaffected. */
 @media (min-width: 769px) and (max-width: 1199px) {
   .hero {
     --hero-fold-reserve: 330px;
-    min-height: max(360px, min(640px, calc(100svh - var(--hero-fold-reserve))));
-  }
-
-  .hero__bg-image {
-    object-position: center 22%;
+    min-height: max(var(--hero-height-mobile), min(var(--hero-height-tablet-max), calc(100svh - var(--hero-fold-reserve))));
   }
 }
