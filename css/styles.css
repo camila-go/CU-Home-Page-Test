@@ -1522,7 +1522,7 @@ button {
 
 @media (prefers-reduced-motion: reduce) and (max-width: 768px) {
   .action-cta__panels {
-    background-image: url("/assets/cta-mobile.png");
+    background-image: url("/assets/cta-mobile.jpg");
   }
 }
 

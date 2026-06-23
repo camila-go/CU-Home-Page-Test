@@ -74,8 +74,13 @@ public/
 - **Figma-sourced assets expire.** Original art was pulled via Figma MCP URLs
   that expire (~7 days). The committed copies in `public/assets/` are the source
   of truth now; don't expect the Figma URLs to still resolve.
-- **Responsive CTA art:** the closing "what are you waiting for?" section uses a
-  `<picture>` with `cta-mobile.png` (≤768px) and `cta-people.png` (desktop).
+- **CTA background videos:** the closing "what are you waiting for?" section
+  plays three looping clips (`public/assets/videos/{leftLady,middleMan,rightLady}_loop.{webm,mp4}`)
+  — see §12. The static `cta-people.png` (desktop) and `cta-mobile.jpg` (mobile)
+  are now used **only** as the reduced-motion fallback (loaded via CSS
+  `background-image` scoped to the reduced-motion media query). `cta-mobile`
+  was recompressed PNG→JPEG (928 KB → 140 KB). The old per-person `cta-1/2/3.png`
+  are unused legacy art (safe to delete).
 
 ---
 
@@ -91,7 +96,7 @@ Mobile-first base styles, with these override breakpoints (see `styles.css`):
 | `max-width: 1024px` | Tablet: hamburger nav, **program-finder top is the row layout** (title beside 2×2 chips) |
 | `min-width: 769px and max-width: 1199px` | **Tablet/small-desktop hero**: hero gets extra height (reserve 330, capped `--hero-height-tablet-max` = 640) since the program finder (row layout) is short |
 | `min-width: 1024px` | **Wide carousel layout** (`1440 × 642` card, Kenny/faculty overflow above the card) |
-| `min-width: 1200px` | Desktop refinements: hero capped at **755px** (Figma) + 4-across program-finder chips, content-band bg crop, etc. |
+| `min-width: 1200px` | Desktop refinements: hero capped at **744px** (`--hero-height`) + 4-across program-finder chips, content-band bg crop, etc. |
 | `max-width: 1280px` / `min-width: 1920px` | `--page-gutter` adjustments only (in `tokens.css`) |
 
 ⚠️ **The 1023 / 1024 boundary is load-bearing for the carousel.** The phone and
@@ -324,3 +329,38 @@ browsers:
 | Sticky header offsets | `.utility-bar` / `.main-nav` `top`/`z-index` (§5) |
 | Program-finder dropdown options | `SPECIALIZATIONS` map in `js/main.js` |
 | "See all Capella programs" button alignment | `.stats-section__cta { align-self }` (right-aligned/flush with cards on desktop) |
+| CTA background videos | `.action-cta__video` markup in `index.html` + `initCtaVideos()` in `js/main.js` (§12) |
+
+---
+
+## 12. CTA background videos
+
+The closing "what are you waiting for?" section plays three looping clips
+(left lady / middle man / right lady) instead of a static image.
+
+- **Files:** `public/assets/videos/{leftLady,middleMan,rightLady}_loop.{webm,mp4}`.
+  Each clip starts and ends on the empty stool so the `loop` is seamless (no
+  jump cut). Each `<video>` lists the **WebM source first, MP4 second** — the
+  browser picks WebM where supported (Chrome/Firefox/Edge) and falls back to
+  MP4 (Safari).
+- **Autoplay-as-background:** `muted` + `playsinline` + `loop` (required for
+  autoplay, incl. iOS). There is **no `autoplay` attribute** — see lazy-load.
+- **Lazy-load (`initCtaVideos()`):** videos use `preload="none"`; an
+  IntersectionObserver calls `play()` only when the section is within ~200px of
+  the viewport and `pause()`s when it leaves. So the ~2.7 MB of WebM is not
+  fetched on initial page load (the section is below the fold). Hidden videos
+  are skipped (`offsetParent === null`), so the 2nd/3rd clips never download on
+  mobile.
+- **Layout:** 3-up grid on desktop; on phones (`≤768px`) only the **first**
+  clip is shown full-bleed (`nth-child(n+2)` hidden) — three strips would be too
+  narrow at 375px.
+- **Placeholder:** `.action-cta__video { background: #d5a461 }` (sampled from the
+  clip backdrop) avoids a black flash before the first frame paints.
+- **Reduced motion:** under `prefers-reduced-motion: reduce`, `initCtaVideos()`
+  bails and the CSS hides the videos and shows the static image
+  (`cta-people.png` desktop / `cta-mobile.jpg` mobile) via a `background-image`
+  scoped to the media query — so that image is only fetched by reduced-motion
+  users; everyone else skips it.
+- **If you swap the clips:** keep the seamless empty-stool loop point, re-export
+  both WebM + MP4, and keep them small (right lady is currently the heaviest at
+  ~1.4 MB WebM — a good target if you trim further).
