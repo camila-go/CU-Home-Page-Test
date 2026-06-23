@@ -1499,6 +1499,31 @@ button {
   min-height: 750px;
   object-fit: cover;
   object-position: center top;
+  /* Warm backdrop placeholder so there's no black flash before the (lazy-
+     loaded) video paints its first frame. */
+  background-color: #d5a461;
+}
+
+/* Reduced motion: don't play video — fall back to the static image. The
+   background-image is only fetched when this media query matches, so normal
+   visitors never download it. */
+@media (prefers-reduced-motion: reduce) {
+  .action-cta__video {
+    display: none;
+  }
+
+  .action-cta__panels {
+    grid-template-columns: 1fr;
+    background-image: url("/assets/cta-people.png");
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 768px) {
+  .action-cta__panels {
+    background-image: url("/assets/cta-mobile.png");
+  }
 }
 
 .action-cta__overlay {

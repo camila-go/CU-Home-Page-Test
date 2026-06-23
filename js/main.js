@@ -517,6 +517,37 @@ function initMobileNav() {
   });
 }
 
+// Lazy-load the CTA background videos: with preload="none" + no autoplay
+// attribute, nothing downloads until we call play() as the section nears the
+// viewport. Pause when it leaves to save CPU/battery. Reduced-motion users
+// never load them (the CSS shows a static image instead). Hidden videos
+// (the 2nd/3rd on mobile) are skipped, so only what's on screen downloads.
+function initCtaVideos() {
+  const section = document.querySelector('.action-cta');
+  if (!section) return;
+
+  const videos = [...section.querySelectorAll('.action-cta__video')];
+  if (!videos.length || prefersReducedMotion) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        videos.forEach((video) => {
+          if (video.offsetParent === null) return; // display:none (e.g. mobile)
+          if (entry.isIntersecting) {
+            if (video.paused) video.play().catch(() => {});
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      });
+    },
+    { rootMargin: '200px 0px', threshold: 0.01 }
+  );
+
+  observer.observe(section);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initCarousel();
   initProgramFinder();
@@ -526,4 +557,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initParallax();
   initNavScroll();
   initMobileNav();
+  initCtaVideos();
 });
