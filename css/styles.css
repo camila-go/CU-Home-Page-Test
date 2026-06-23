@@ -2452,19 +2452,22 @@ button {
     min-height: 0;
   }
 
-  /* Phones: stack the three videos (3 side-by-side strips would be too
-     narrow at 375px). */
+  /* Phones: show only the first (top) video full-bleed; the other two are
+     hidden. */
   .action-cta__panels {
     min-height: 0;
     aspect-ratio: 375 / 687;
     grid-template-columns: 1fr;
-    grid-auto-rows: 1fr;
   }
 
   .action-cta__video {
     min-height: 0;
     height: 100%;
     object-position: center top;
+  }
+
+  .action-cta__video:nth-child(n + 2) {
+    display: none;
   }
 
   /* Stat labels drop from h6 (20px) to 16px on mobile per Figma 5647:6361. */
