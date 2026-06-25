@@ -118,6 +118,18 @@ the 40px utility bar so both stay visible while scrolling. If you change the
 utility bar height, **update the nav's `top` to match** (base rule + the
 `≤768px` override both set this).
 
+**Nav height = `.main-nav__bar` `min-height` (no vertical padding).** Per Figma
+the global nav is **90px** (desktop, content 88), **72px** tablet, **67px**
+mobile. The bar carries **no top/bottom padding** — content is centered by the
+`min-height`, which alone sets the height (`88 / 72 / 67`). Don't re-add
+`padding-block` to `.main-nav` or `.main-nav__bar`: it stacks on top of the
+`min-height` (and the 44px hamburger) and inflated the header to 168px. So the
+header total is **~128px** (40 + 88), not 168 — note the hero
+`--hero-fold-reserve` values (§5 hero) still assume the old taller header, so
+they have ~40px of slack (harmless: the program finder just sits a bit further
+above the fold; retune the reserves down ~40px if you want the hero to fill
+that space).
+
 `initNavScroll()` toggles `.main-nav--scrolled` after 24px of scroll (shrinks
 the nav). `z-index: 100/101` on the header sits above the parallax band
 (`z-index: 1`) and carousel content — keep new stacking contexts below 100.

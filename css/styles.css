@@ -515,7 +515,10 @@ button {
   top: 40px; /* pinned just below the 40px sticky utility bar */
   z-index: 100;
   background: var(--color-uni-black);
-  padding-block: 20px;
+  /* No outer padding: the 88px bar IS the nav (Figma global nav = 90px,
+     content 88px). The previous 20px padding-block added a redundant, invisible
+     40px (same color as the bar), making the header 168px instead of ~128px. */
+  padding-block: 0;
 }
 
 .main-nav__wrapper {
@@ -531,7 +534,11 @@ button {
   justify-content: space-between;
   width: 100%;
   min-height: 88px;
-  padding: 20px 4px 20px 0;
+  /* No vertical padding — content is centered by min-height, which sets the
+     nav height (88 desktop / 72 tablet / 67 mobile, per Figma). Vertical
+     padding here previously stacked on top of the min-height + the 44px
+     hamburger, inflating the mobile nav to 84px. */
+  padding: 0 4px 0 0;
   border-radius: 100px;
   background: var(--color-uni-black);
 }
