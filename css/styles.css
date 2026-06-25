@@ -2526,14 +2526,20 @@ button {
 }
 
 @media (max-width: 640px) {
-  /* 2x2 chip grid on phones, matching the Figma mobile design. */
+  /* 2x2 chip grid on phones, matching the Figma mobile design. minmax(0,1fr)
+     (not plain 1fr) lets the two columns shrink to equal halves instead of
+     staying at the chips' content width and overflowing; stretch overrides the
+     desktop flex-end so the grid fills the row. */
   .program-finder__chips {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 12px;
     width: 100%;
+    justify-content: stretch;
   }
 
   .program-finder__chips .chip {
     justify-content: center;
+    padding-inline: 12px;
   }
 
   .stats-section__grid {
@@ -2542,13 +2548,16 @@ button {
   }
 }
 
-/* Tablet / small-desktop (769–1199px): the program finder is the shorter row
-   layout here, so the hero gets extra height (capped below the desktop height)
-   so it isn't cramped. Image crop is centered globally. Phones (<=768px) and
-   desktop (>=1200px) are unaffected. */
-@media (min-width: 769px) and (max-width: 1199px) {
+/* Tablet / large-phone (641–1199px): the hero headline grows large here
+   (~98px at 768) but the viewport can be short, so we hold a taller floor
+   (520px) than the 360px mobile floor — otherwise the big bottom-anchored
+   headline rides up onto the faces. On short viewports the program finder
+   scrolls below the fold (acceptable — same trade-off as mobile). Capped below
+   the desktop height. Phones (<=640px, smaller headline) and desktop
+   (>=1200px) are unaffected. */
+@media (min-width: 641px) and (max-width: 1199px) {
   .hero {
     --hero-fold-reserve: 330px;
-    min-height: max(var(--hero-height-mobile), min(var(--hero-height-tablet-max), calc(100svh - var(--hero-fold-reserve))));
+    min-height: max(520px, min(var(--hero-height-tablet-max), calc(100svh - var(--hero-fold-reserve))));
   }
 }
