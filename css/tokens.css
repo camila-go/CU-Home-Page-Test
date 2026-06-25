@@ -40,7 +40,7 @@
 
   /* Hero heights from Figma. The hero fills the viewport minus the sticky
      header + program-finder top, capped/floored at these design heights. */
-  --hero-height: 744px; /* desktop (>=1200px) cap */
+  --hero-height: 755px; /* desktop (>=1200px) cap (Figma hero height) */
   --hero-height-tablet-max: 640px; /* tablet / small-desktop cap (769-1199px) */
   --hero-height-mobile: 360px; /* mobile floor (<769px) */
   --page-gutter: clamp(15px, 12.5vw, 240px);

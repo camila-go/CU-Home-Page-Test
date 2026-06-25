@@ -96,7 +96,7 @@ Mobile-first base styles, with these override breakpoints (see `styles.css`):
 | `max-width: 1024px` | Tablet: hamburger nav, **program-finder top is the row layout** (title beside 2×2 chips) |
 | `min-width: 769px and max-width: 1199px` | **Tablet/small-desktop hero**: hero gets extra height (reserve 330, capped `--hero-height-tablet-max` = 640) since the program finder (row layout) is short |
 | `min-width: 1024px` | **Wide carousel layout** (`1440 × 642` card, Kenny/faculty overflow above the card) |
-| `min-width: 1200px` | Desktop refinements: hero capped at **744px** (`--hero-height`) + 4-across program-finder chips, content-band bg crop, etc. |
+| `min-width: 1200px` | Desktop refinements: hero capped at **755px** (`--hero-height`, Figma) + 4-across program-finder chips, content-band bg crop, etc. |
 | `max-width: 1280px` / `min-width: 1920px` | `--page-gutter` adjustments only (in `tokens.css`) |
 
 ⚠️ **The 1023 / 1024 boundary is load-bearing for the carousel.** The phone and
@@ -125,10 +125,9 @@ mobile. The bar carries **no top/bottom padding** — content is centered by the
 `padding-block` to `.main-nav` or `.main-nav__bar`: it stacks on top of the
 `min-height` (and the 44px hamburger) and inflated the header to 168px. So the
 header total is **~128px** (40 + 88), not 168 — note the hero
-`--hero-fold-reserve` values (§5 hero) still assume the old taller header, so
-they have ~40px of slack (harmless: the program finder just sits a bit further
-above the fold; retune the reserves down ~40px if you want the hero to fill
-that space).
+`--hero-fold-reserve` values (§5 hero) were tightened ~40px to match the shorter
+nav (desktop 360→320, tablet 460→420), so the hero now reaches its 755px cap on
+standard desktops (≥~1075px tall) while the program finder stays above the fold.
 
 `initNavScroll()` toggles `.main-nav--scrolled` after 24px of scroll (shrinks
 the nav). `z-index: 100/101` on the header sits above the parallax band
@@ -141,7 +140,7 @@ The hero's `min-height` is **not** a fixed value — it's
 fills the viewport minus the sticky header above it and the program-finder top
 row below it, so the program finder is always above the fold. `--hero-fold-reserve`
 is tuned per breakpoint (≈ header + program-finder top area). The cap/floor use
-the Figma height tokens in `tokens.css`: `--hero-height` (744, desktop ≥1200px
+the Figma height tokens in `tokens.css`: `--hero-height` (755, desktop ≥1200px
 cap), `--hero-height-tablet-max` (640, 769–1199px cap), `--hero-height-mobile`
 (360, the `<769px` floor). On the shortest phones the 360 floor pushes the
 (4-chip) program finder a few px below the fold — fine on a scrolling mobile

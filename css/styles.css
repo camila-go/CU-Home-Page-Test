@@ -1715,7 +1715,8 @@ button {
 /* Responsive */
 @media (min-width: 768px) {
   .hero {
-    --hero-fold-reserve: 460px;
+    /* Tightened from 460 after the nav dropped to 72px here (was 112px). */
+    --hero-fold-reserve: 420px;
     padding: 56px 48px;
   }
 
@@ -1948,9 +1949,11 @@ button {
   .hero {
     /* Row layout for the program-finder top (title beside 4 chips), so it
        needs less reserved space. Cap the hero at the Figma design height
-       on larger viewports; on shorter ones it still shrinks so the program
-       finder stays above the fold. (Image crop is centered globally.) */
-    --hero-fold-reserve: 360px;
+       (755px) on larger viewports; on shorter ones it still shrinks so the
+       program finder stays above the fold. Reserve = 88px nav + 40px utility +
+       program-finder top area + breathing; tightened after the nav dropped to
+       88px so the hero reaches 755 on standard desktops. */
+    --hero-fold-reserve: 320px;
     min-height: max(var(--hero-height-mobile), min(var(--hero-height), calc(100svh - var(--hero-fold-reserve))));
     padding: 68px 100px;
   }
