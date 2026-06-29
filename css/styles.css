@@ -616,6 +616,16 @@ button {
      still lands on the torsos). Held at every breakpoint — no per-breakpoint
      object-position overrides. */
   object-position: center center;
+  /* The hero is wider than the source (≈2.11:1), so object-fit:cover always
+     fills the width on desktop — object-position-x can't pan a width-filling
+     image. The group is composed slightly right of center in hero.png, leaving
+     more red on the left. A small uniform zoom creates horizontal slack, and
+     translateX nudges the group left to balance the red margins. The zoom is
+     the minimum that still covers the right edge (~10px slack at 1440); the
+     extra vertical crop comes off the generous red headroom above the heads, so
+     heads stay uncropped at every width. transform-origin stays centered. */
+  transform: scale(1.07) translateX(-2.6%);
+  transform-origin: center center;
 }
 
 .hero__gradient {
