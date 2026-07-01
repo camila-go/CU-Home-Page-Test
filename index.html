@@ -12,7 +12,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/styles.css" />
-    <link rel="preload" as="image" href="/assets/hero.png" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/hero-people.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/hero-red.webp" />
     <script src="https://kit.fontawesome.com/f1bee60eab.js" crossorigin="anonymous"></script>
   </head>
   <body>
@@ -80,10 +81,18 @@
     <main>
       <section class="hero" aria-labelledby="hero-heading">
         <div class="hero__background" aria-hidden="true">
+          <!-- Two layers: the red wall (parallaxes on scroll) and the people
+               cutout on top (static). See .hero__bg-red / .hero__bg-people. -->
           <img
-            src="/assets/hero.png"
+            src="/assets/hero-red.webp"
             alt=""
-            class="hero__bg-image media-img"
+            class="hero__bg-image hero__bg-red media-img"
+            decoding="async"
+          />
+          <img
+            src="/assets/hero-people.webp"
+            alt=""
+            class="hero__bg-image hero__bg-people media-img"
             fetchpriority="high"
             decoding="async"
           />
@@ -200,7 +209,7 @@
           <div class="carousel__viewport page-container">
             <div class="carousel__track">
               <article class="carousel__slide carousel__slide--active" data-slide="0">
-                <div class="carousel__card">
+                <div class="carousel__card carousel-reveal">
                   <div class="carousel__panel" aria-hidden="true"></div>
                   <span class="carousel__badge badge">Student experience</span>
                   <div class="carousel__mockup">
@@ -227,7 +236,7 @@
               </article>
 
               <article class="carousel__slide" data-slide="1">
-                <div class="carousel__card">
+                <div class="carousel__card carousel-reveal">
                   <div class="carousel__panel" aria-hidden="true"></div>
                   <span class="carousel__badge badge">Alumni stories</span>
                   <div class="carousel__portrait carousel__portrait--alumni">
@@ -259,7 +268,7 @@
               </article>
 
               <article class="carousel__slide" data-slide="2">
-                <div class="carousel__card">
+                <div class="carousel__card carousel-reveal">
                   <div class="carousel__panel" aria-hidden="true"></div>
                   <span class="carousel__badge badge">Faculty</span>
                   <div class="carousel__portrait carousel__portrait--faculty">

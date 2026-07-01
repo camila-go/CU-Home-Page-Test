@@ -20,6 +20,28 @@ function initCarousel() {
 
   const lastIndex = slides.length - 1;
   let activeIndex = 0;
+  let carouselSeen = false;
+
+  // Re-run the card slide-in + the staggered text reveal for a slide. The card
+  // (`.carousel-reveal`) slides in from the right; its inner text (title, body,
+  // attribution, button) then staggers in — those are driven purely by CSS off
+  // the card's `.is-visible`, but we must reset THEIR transitions too, so a
+  // revisited slide doesn't animate its text *out* before sliding back in.
+  const TEXT_SEL =
+    '.carousel__content .carousel__title, .carousel__content .carousel__body,' +
+    ' .carousel__content .carousel__attribution, .carousel__content .btn';
+
+  function revealSlide(slide) {
+    if (!slide) return;
+    const card = slide.querySelector('.carousel-reveal');
+    const texts = slide.querySelectorAll(TEXT_SEL);
+    const all = [...(card ? [card] : []), ...texts];
+    all.forEach((el) => { el.style.transition = 'none'; });
+    if (card) card.classList.remove('is-visible');
+    void slide.offsetWidth; // force reflow so the re-add transitions
+    all.forEach((el) => { el.style.transition = ''; });
+    if (card) card.classList.add('is-visible');
+  }
 
   function getStep() {
     const slide = slides[0];
@@ -46,6 +68,10 @@ function initCarousel() {
       button.classList.toggle('carousel__dot--active', isActive);
       button.setAttribute('aria-selected', String(isActive));
     });
+
+    // Re-animate the card text on real navigation (not the initial/resize
+    // layout calls, which pass animate=false), once the carousel is in view.
+    if (animate && carouselSeen) revealSlide(slides[activeIndex]);
   }
 
   dots.forEach((dot, index) => {
@@ -154,6 +180,35 @@ function initCarousel() {
   window.addEventListener('resize', () => goTo(activeIndex, false));
 
   goTo(0, false);
+
+  // Slide the active card in from the right the first time the carousel scrolls
+  // into view. Reduced-motion users get it shown immediately (CSS keeps it
+  // visible). Cards start hidden (opacity 0), so a safety timeout reveals the
+  // active card even if the observer never fires — the card must never get
+  // stuck invisible.
+  if (prefersReducedMotion) {
+    carouselSeen = true;
+  } else {
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          carouselSeen = true;
+          revealSlide(slides[activeIndex]);
+          revealObserver.disconnect();
+        });
+      },
+      { threshold: 0.25 }
+    );
+    revealObserver.observe(viewport);
+
+    window.setTimeout(() => {
+      if (!carouselSeen) {
+        carouselSeen = true;
+        revealSlide(slides[activeIndex]);
+      }
+    }, 2500);
+  }
 }
 
 function initProgramFinder() {
@@ -484,6 +539,93 @@ function initParallax() {
   update();
 }
 
+// Subtle parallax on the hero's red wall only — the people layer stays put.
+function initHeroParallax() {
+  if (prefersReducedMotion) return;
+
+  const hero = document.querySelector('.hero');
+  const red = document.querySelector('.hero__bg-red');
+  if (!hero || !red) return;
+
+  let ticking = false;
+
+  const update = () => {
+    ticking = false;
+    const rect = hero.getBoundingClientRect();
+    if (rect.bottom < 0) return; // hero fully scrolled past — skip work
+
+    // Driven straight off scroll position (the hero is the first section) so the
+    // wall starts drifting from the very first pixel of scroll — not only after
+    // the hero clears the ~128px sticky header, which read as "no parallax".
+    const scrolled = window.scrollY || window.pageYOffset || 0;
+    // The wall drifts down as you scroll, lagging the page for depth. Capped at
+    // 70px — comfortably inside the scale(1.5) overshoot so no wall edge is ever
+    // exposed (mobile's 360px hero is the worst case, see .hero__bg-red). Uses
+    // the `translate` property so it composes with (doesn't clobber) the CSS
+    // `transform: scale()` on .hero__bg-red.
+    const shift = Math.min(scrolled * 0.25, 70);
+    red.style.translate = `0 ${shift.toFixed(2)}px`;
+  };
+
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+}
+
+// Scroll-driven slide-in for the featured-story cards: the card's horizontal
+// offset tracks how far the carousel has scrolled up the viewport, so it scrubs
+// in from the right as you scroll (not a fixed-duration transition). Spread over
+// a large scroll range so it's slow. The inner text keeps its own triggered
+// stagger (see the reveal in initCarousel).
+function initCardScroll() {
+  if (prefersReducedMotion) return; // cards sit in place (no inline translate)
+
+  const carousel = document.querySelector('.carousel');
+  const cards = document.querySelectorAll('.carousel__card');
+  if (!carousel || !cards.length) return;
+
+  const START_OFFSET = 45; // % of card width — where the card starts, off-right
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const rect = carousel.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+
+    let x;
+    if (rect.top >= vh) {
+      x = START_OFFSET; // still below the fold — parked off to the right
+    } else if (rect.bottom <= 0) {
+      x = 0; // scrolled well past — settled
+    } else {
+      // 0 when the carousel top is at the bottom of the viewport, 1 once it has
+      // risen ~90% of a viewport height. The wide range makes the slide slow.
+      const e = Math.min(Math.max((vh - rect.top) / (vh * 0.9), 0), 1);
+      x = (1 - e) * START_OFFSET;
+    }
+    const value = `${x.toFixed(2)}% 0`;
+    cards.forEach((c) => {
+      c.style.translate = value;
+    });
+  };
+
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+}
+
 function initNavScroll() {
   const nav = document.querySelector('.main-nav');
   if (!nav) return;
@@ -555,6 +697,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initRevealAnimations();
   initCountUp();
   initParallax();
+  initHeroParallax();
+  initCardScroll();
   initNavScroll();
   initMobileNav();
   initCtaVideos();

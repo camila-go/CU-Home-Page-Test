@@ -56,6 +56,45 @@ public/
 
 ## 3. Assets — read before touching images
 
+### 3a. Hero is two layers (for the red-only parallax)
+
+The hero background is split so the red wall can parallax independently of the
+people (who must stay put — see §5 / §7 `initHeroParallax`):
+
+- **`hero-red.webp`** — the wall, reconstructed from `hero.png` with the people
+  removed. Sits at the back; this is the layer that moves. `.hero__bg-red`
+  scales it up (`scale(1.5)`) for parallax overshoot room.
+- **`hero-people.webp`** — a transparent cutout of the five people. Sits on top,
+  never moves; keeps the balance transform (`scale(1.07) translateX(-2.6%)`,
+  §5). `fetchpriority="high"` (it's the LCP subject).
+- **`hero.png`** (6.3 MB) is kept only as the **regeneration source** — it is no
+  longer referenced at runtime. `.hero__background` has a `background-color`
+  (wall red) so the hero never flashes black before the layers paint.
+
+⚠️ **The wall reconstruction must preserve real texture in the margins, not
+just patch the gap.** A first attempt filled the people-shaped gap, then blurred
+the *entire* canvas to hide the seam — which also blurred the margins (the only
+area actually visible beside the people), leaving a flat, textureless field. The
+parallax was technically running but **invisible**, because a human eye can't
+perceive vertical motion in a near-uniform color. Fixed pipeline:
+1. `rembg` (`u2net_human_seg`) for the people cutout.
+2. Fit a smooth quadratic gradient (least-squares, not per-row interpolation —
+   per-row leaves visible horizontal banding, and a local blur-diffusion fill
+   leaves a faint ghost of the silhouette) to the known wall pixels, for the
+   *gap's* base color/vignette only.
+3. Sample real grain/mottling from a people-free strip of the original wall and
+   tile it down the canvas, add to the gap's base color.
+4. Composite: **keep the original pixels everywhere outside the gap** (mask
+   feathered a few px at the edge) — only the actual gap is synthetic. This is
+   what keeps the margins' real texture intact.
+
+Regenerating (if the source art changes): re-run this pipeline against
+`hero.png`, then re-export both layers as WebP (`hero-people` PNG 3 MB → ~200 KB;
+`hero-red` → ~145 KB). The throwaway scripts lived in `/tmp`. After
+regenerating, sanity-check texture is visible in the margins (not just the
+gap) — e.g. crop a clearly-people-free region and eyeball it; a flat/smooth
+result there means the parallax will be invisible again.
+
 - **Cache-busting query strings:** Some `<img src>` values carry `?v=N`
   (e.g. `carousel-portrait-alumni.png?v=8`). These were bumped each time an
   asset on disk was replaced to defeat browser/Vite caching. If you replace one
@@ -156,6 +195,11 @@ the bottom-anchored headline still lands on the torsos. There are intentionally
 heads on wide viewports. If you ever reintroduce one, re-check head-cropping at
 2560px-wide and headline-on-faces at the short desktop heights (1920×1000).
 
+> Note: the crop centering + balance transform now live on **`.hero__bg-people`**
+> (the cutout layer), not the base `.hero__bg-image`, since the hero is split
+> into two layers (§3a). The `.hero__bg-red` wall layer is centered + scaled for
+> parallax and has no balance translate.
+
 ---
 
 ## 6. Carousel — the trickiest component
@@ -214,8 +258,11 @@ All live in `main.js`, initialized on `DOMContentLoaded`. Every one is
 | --- | --- | --- |
 | `initTextReveal()` | Splits target headings into per-word spans (`.word` mask + `.word__inner`) that rise up from behind a clip mask, staggered via `--word-index`. | IntersectionObserver (per heading) |
 | `initRevealAnimations()` | Fade-up for elements with `.reveal`. Optional stagger via `data-reveal-delay="N"` (× 80ms). | IntersectionObserver |
+| Carousel card reveal (in `initCarousel()`) | The whole featured-story card (`.carousel__card.carousel-reveal`) **slides in from the right** + fades (1.8s). Its inner text (title → body/attribution → button) then **staggers in** (fade+rise, 1.5s, delays 0.35/0.55/0.75s), driven by CSS off the card's `.is-visible`. Fires on first scroll-in, then **re-animates on every slide change**. See note below. | IntersectionObserver (first view) + `goTo()` + safety timeout |
 | `initCountUp()` | Animates the stats numbers (40 / 80 / 1,530+ / 63%) counting up with a custom cubic-bezier ease. Preserves prefixes/suffixes/grouping. | IntersectionObserver (threshold 0.4) |
 | `initParallax()` | Translates the content-band background image on scroll for depth. | `scroll`/`resize`, throttled with `requestAnimationFrame` |
+| `initHeroParallax()` | Subtle parallax on the hero's **red wall only** (`.hero__bg-red`) — the people layer never moves. Driven off `window.scrollY` so it responds from the first scroll pixel; drifts the wall down up to 70px. See §3a + §5. | `scroll`/`resize`, throttled with `requestAnimationFrame` |
+| Hero wall Ken Burns | CSS-only ambient zoom+pan on `.hero__bg-red` only (`@keyframes hero-wall-drift`, 13s alternate) — plays on its own (no scroll), people stay still. Zoom only grows past the base so no edge is exposed. Disabled under reduced-motion. | autoplay |
 | Card hover scale | CSS-only `transform: scale(1.02)` on `.stats-section__program:hover` (replaced the removed VanillaTilt 3D tilt — it caused a "jiggle"). Disabled under reduced-motion. | hover |
 | Glass shine | CSS-only diagonal sheen sweep on `.glass-card:hover` (`::before`). | hover |
 
@@ -227,12 +274,45 @@ All live in `main.js`, initialized on `DOMContentLoaded`. Every one is
 - Headings that get the effect are listed in `TEXT_REVEAL_SELECTORS`. To add
   one, append its selector — `splitWords()` preserves `<br>` line breaks and
   inter-word spacing automatically.
-- **Carousel titles are intentionally excluded** — they contain a decorative
-  quote-mark span and live in an absolutely-positioned layout, so word-splitting
-  would break them.
+- **Carousel titles are intentionally excluded from `splitWords()`** — they
+  contain a decorative quote-mark span and live in an absolutely-positioned
+  layout, so word-splitting would break them. They still move — they ride along
+  with the whole-card **carousel card reveal** below (no per-word splitting).
 - `.word` uses `overflow: hidden` with `padding-bottom: 0.12em` +
   `margin-bottom: -0.12em` so the clip mask has room for descenders without
   shifting layout. Keep this if you change heading line-heights.
+
+### Carousel card reveal details / gotchas
+- The `.carousel-reveal` class sits on **`.carousel__card`** (the whole card),
+  not the individual text elements — the card slides in from the right + fades
+  as one unit (content rides along, no per-element stagger).
+- **It animates with the `translate` property, not `transform`.** This is
+  deliberate: the carousel **track** uses `transform: translateX()` for
+  navigation, so a `transform`-based card reveal would clobber it. `translate`
+  is a separate property (the alumni portrait already uses `scale:` the same
+  way), so the card's `translate: 56px 0 → 0` composes with the track's
+  transform instead of fighting it.
+- Driven from `initCarousel()` (not the page-wide `initRevealAnimations()`): a
+  one-shot IntersectionObserver on `.carousel__viewport` reveals the active card
+  on first scroll-in (`carouselSeen`), and `goTo()` re-runs `revealSlide()` on
+  every real navigation (dot/swipe/arrow — the `animate=false` init/resize calls
+  are skipped). `revealSlide()` resets with `transition: none` before re-adding
+  `is-visible` so a revisited card doesn't animate *out* while it slides in.
+- **Cards start at `opacity: 0`, so a stuck reveal = an invisible card.** A
+  safety `setTimeout` (2.5s) in `initCarousel()` reveals the active card even if
+  the observer never fires. Keep it — it's the guard against a blank card.
+- **Inner text stagger is CSS-only, keyed off `.carousel__card.is-visible`** (no
+  per-element classes) — title/body/attribution/button. Because those elements
+  have their own transitions, `revealSlide()` resets THEM too (via `TEXT_SEL`),
+  not just the card, so a revisited slide doesn't animate its text *out* first.
+  If you add a new text element to a card, add its selector to `TEXT_SEL` and
+  the CSS reveal group, or it won't reset cleanly on slide change.
+- Reduced motion: a `@media (prefers-reduced-motion: reduce)` block forces
+  `.carousel-reveal` visible (opacity 1, no translate/transition); JS sets
+  `carouselSeen = true` and skips observing. **Per-slide IntersectionObserver is
+  not used** for the reveal — off-screen slides are clipped by the viewport's
+  `overflow: hidden`, so the slide-change hook is what makes non-active cards
+  animate when you reach them.
 
 ### Parallax details / gotchas
 - The bg image has built-in **vertical overshoot** (`height: 116%; top: -8%`),
@@ -332,11 +412,14 @@ browsers:
 | A breakpoint's layout | the matching `@media` block in `css/styles.css` (§4) |
 | Which headings animate in | `TEXT_REVEAL_SELECTORS` in `js/main.js` |
 | Carousel behavior / drag | `initCarousel()` in `js/main.js` |
+| Carousel card slide-in (direction / distance / trigger) | `.carousel-reveal` on `.carousel__card` in `index.html`; `.carousel-reveal` rule in `css/styles.css` (`translate: 18% 0`); `revealSlide()` + safety timeout in `initCarousel()` (§7) |
 | Stat numbers or count-up speed | the markup values + `data-count-duration` attr (`js/main.js`) |
 | Stat number size / overlap | `.stats-section__value` font is `min(clamp(…12.8vw…), 44cqi)`; each `.stats-section__stat` is a container so the value scales to its cell and can't overflow into the next stat |
 | Hero height / above-the-fold reserve | `--hero-fold-reserve` + the `min-height` `max(floor, min(cap, …))` on `.hero` (§5) |
 | Where the desk background starts | `--content-bg-top` on `.content-band__bg` (§7) |
 | Parallax strength | amplitude factor in `initParallax()` + CSS overshoot (§7) |
+| Hero red-wall parallax (amount / cap) | `initHeroParallax()` in `js/main.js` (factor `0.25` + 70px cap, driven off `window.scrollY`); overshoot = `scale()` on `.hero__bg-red` — sized for the **shortest** hero across breakpoints (mobile's 360px floor is worst-case for overshoot, not desktop — see §3a) |
+| Hero layers / regenerate the cutout + wall | `.hero__bg-red` / `.hero__bg-people` in `index.html` + CSS; regen pipeline in §3a |
 | Sticky header offsets | `.utility-bar` / `.main-nav` `top`/`z-index` (§5) |
 | Program-finder dropdown options | `SPECIALIZATIONS` map in `js/main.js` |
 | "See all Capella programs" button alignment | `.stats-section__cta { align-self }` (right-aligned/flush with cards on desktop) |

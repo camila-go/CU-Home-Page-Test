@@ -374,6 +374,65 @@ button {
   transform: translateY(0);
 }
 
+/* The featured-story card's slide-in from the right is SCROLL-DRIVEN:
+   initCardScroll() sets its `translate` every scroll frame, mapped to how far
+   the carousel has scrolled up the viewport — so the card scrubs in as you
+   scroll rather than playing on a fixed timer. No transition here (JS updates
+   it per frame). `translate` (not `transform`) so it composes with the carousel
+   track's own translateX (navigation). Opacity stays 1 — the card can never be
+   stuck invisible; only its inner text fades/staggers (below). */
+.carousel-reveal {
+  will-change: translate;
+}
+
+/* Text inside each card staggers in (slow fade + rise), layered on top of the
+   whole-card slide-in. Driven purely by CSS off the card's `.is-visible`
+   (revealSlide resets these transitions too — see initCarousel). Uses
+   `translate` (not transform) so it composes with the desktop absolute-position
+   rules on carousel content. */
+.carousel__content .carousel__title,
+.carousel__content .carousel__body,
+.carousel__content .carousel__attribution,
+.carousel__content .btn {
+  opacity: 0;
+  translate: 0 20px;
+  transition:
+    opacity 1.5s var(--ease-out-expo),
+    translate 1.5s var(--ease-out-expo);
+}
+
+.carousel__card.is-visible .carousel__content .carousel__title,
+.carousel__card.is-visible .carousel__content .carousel__body,
+.carousel__card.is-visible .carousel__content .carousel__attribution,
+.carousel__card.is-visible .carousel__content .btn {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Stagger: title first, then body/attribution, then button — offset from the
+   card's own slide so the text settles in after the card has arrived. */
+.carousel__card.is-visible .carousel__content .carousel__title {
+  transition-delay: 0.35s;
+}
+.carousel__card.is-visible .carousel__content .carousel__body,
+.carousel__card.is-visible .carousel__content .carousel__attribution {
+  transition-delay: 0.55s;
+}
+.carousel__card.is-visible .carousel__content .btn {
+  transition-delay: 0.75s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel__content .carousel__title,
+  .carousel__content .carousel__body,
+  .carousel__content .carousel__attribution,
+  .carousel__content .btn {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+}
+
 /* Masked word reveal — headings rise up from behind a clip mask, staggered
    word-by-word as they scroll into view. JS splits the text into words. */
 .reveal-text .word {
@@ -603,6 +662,9 @@ button {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* Wall red sampled from the source — shows during the brief moment before the
+     layer images paint, so the hero never flashes black on first load. */
+  background-color: #811f1d;
 }
 
 .hero__bg-image {
@@ -616,14 +678,58 @@ button {
      still lands on the torsos). Held at every breakpoint — no per-breakpoint
      object-position overrides. */
   object-position: center center;
-  /* The hero is wider than the source (≈2.11:1), so object-fit:cover always
-     fills the width on desktop — object-position-x can't pan a width-filling
-     image. The group is composed slightly right of center in hero.png, leaving
-     more red on the left. A small uniform zoom creates horizontal slack, and
-     translateX nudges the group left to balance the red margins. The zoom is
-     the minimum that still covers the right edge (~10px slack at 1440); the
-     extra vertical crop comes off the generous red headroom above the heads, so
-     heads stay uncropped at every width. transform-origin stays centered. */
+}
+
+/* Hero is split into two layers so the red wall can parallax independently of
+   the people (who must stay put). Both share `.hero__bg-image` above.
+   - hero-red.jpg   : the wall, reconstructed from the source (people inpainted
+     out + softly blurred). Scaled up to give the scroll parallax overshoot room
+     so translating it never exposes an edge. Moved by initHeroParallax().
+   - hero-people.png: transparent cutout of the five people, sits on top and
+     never moves. Keeps the balance transform below. */
+.hero__bg-red {
+  /* object-fit:cover on tall/narrow viewports (mobile, tablet) is
+     height-bound — the source's 2880x1366 (2.11:1) aspect already matches the
+     container height with ~zero built-in vertical overshoot there, unlike wide
+     desktop viewports. So ALL of the parallax travel room has to come from
+     this scale; sized for the worst case (mobile's 360px hero floor) so the
+     70px JS shift (see initHeroParallax) never exposes an edge. */
+  transform: scale(1.5);
+  transform-origin: center center;
+  will-change: transform;
+  /* Ambient "Ken Burns" drift on the wall — plays on its own (no scroll
+     needed) so there's always visible, elegant motion behind the static
+     people. The scroll parallax (initHeroParallax) rides on top via the
+     separate `translate` property, so the two never fight. Zoom only ever
+     grows past the base 1.5, so the layer can't expose an edge. */
+  animation: hero-wall-drift 13s ease-in-out infinite alternate;
+}
+
+@keyframes hero-wall-drift {
+  from {
+    transform: scale(1.5) translate(0, 0);
+  }
+  to {
+    transform: scale(1.68) translate(1.6%, 1.8%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__bg-red {
+    animation: none;
+    transform: scale(1.05);
+  }
+}
+
+/* The source is wider than the hero (≈2.11:1), so object-fit:cover always fills
+   the width on desktop — object-position-x can't pan a width-filling image. The
+   group is composed slightly right of center, leaving more red on the left. A
+   small uniform zoom creates horizontal slack, and translateX nudges the group
+   left to balance the red margins. The zoom is the minimum that still covers
+   the right edge (~10px slack at 1440); the extra vertical crop comes off the
+   generous red headroom above the heads, so heads stay uncropped at every
+   width. transform-origin stays centered. */
+.hero__bg-people {
   transform: scale(1.07) translateX(-2.6%);
   transform-origin: center center;
 }
@@ -936,6 +1042,7 @@ button {
   object-fit: cover;
   object-position: center bottom;
 }
+
 
 .carousel__portrait {
   position: relative;
